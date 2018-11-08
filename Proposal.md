@@ -26,11 +26,21 @@ Last year, in 2018, nearly 80,000 people died from the flu in the US alone. (<ht
 
 **Planned analyses:**
 
+Linear Models
+
+**Potential Indicators or Covariates:**
+
+    * Country or Region
+    * Population Size
+    * Time or Year
+
 **Visualizations:**
 
     * Positive influenza cases over time
     * Seasonal vs. pandemic influenza 
 
 **Coding Challenges:**
+
+Scale of Data/ Granularity
 
 **Planned timeline:**
