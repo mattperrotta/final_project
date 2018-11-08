@@ -1,7 +1,7 @@
 Proposal
 ================
 THE Infectious Disease Data Science Team
-November 7, 2018
+November 8, 2018
 
 ### Team Members
 

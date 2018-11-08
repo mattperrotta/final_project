@@ -1,7 +1,7 @@
 ---
 title: "Proposal"
 author: "THE Infectious Disease Data Science Team"
-date: "November 7, 2018"
+date: "November 8, 2018"
 output: github_document
 ---
 
