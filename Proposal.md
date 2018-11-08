@@ -24,7 +24,9 @@ Many scholars argue that there is an impending 'global threat of avian flu' due 
 
 Understanding current patterns and trends of flu could be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness.
 
-**Final products:**
+**Final products/Deliverables:**
+
+Report, Statistical Analyses, Webpage, and Screencast
 
 **Anticipated data sources:** *The [WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12).*
 
