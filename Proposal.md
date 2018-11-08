@@ -30,9 +30,16 @@ Specifically, we want to examime the seasonality of inlfuenza in different regio
 
 Report, Statistical Analyses, Webpage, and Screencast
 
-**Anticipated data sources:** *The [WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12).*
+**Anticipated data sources:**
+
+*[The WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12).*
+
+*[CIA World Factbook](https://www.cia.gov/library/publications/the-world-factbook/)* (For demographic data - obtained through scraping)
 
 **Planned analyses:**
+
+    * Logisitic Regression with outcome of epidemic threshold with interaction from various covariates
+    * Linear Regression of rate vs seasonality
 
 **Potential Indicators or Covariates:**
 
@@ -40,6 +47,7 @@ Report, Statistical Analyses, Webpage, and Screencast
     * Time or Year
     * Strain
     * GDP
+    * Urbanization
 
 **Visualizations:**
 
@@ -59,10 +67,17 @@ A few coding challenges that we expect to face are the scale of the data, and la
     -   Project Review
     -   In Person Meeting
 -   Week 3: Nov 19-23
+    -   Download/scrape, consolidate, clean, tidy data
+    -   Run interim models
+    -   Visualizations
 -   Week 4: Nov 26-30
+    -   Write report
+    -   Create webpage
+    -   Screencast
 -   Week 5: Dec 3-7
     -   December 6th:
     -   Report, Webpage, and Screencast Due (4pm)
     -   Peer Assessment Due (8pm)
+    -   Final review
 -   Week 6: Dec 10-14
     -   Presentations December 11
