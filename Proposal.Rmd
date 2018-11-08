@@ -26,6 +26,7 @@ Many scholars argue that there is an impending 'global threat of avian flu' due 
 
 Understanding current patterns and trends of flu could be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. 
 
+Specifically, we want to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.  
 
 **Final products/Deliverables:**
 
@@ -36,22 +37,24 @@ _The [WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12)._
 
 **Planned analyses:**
 
-Linear Models 
+
   
 **Potential Indicators or Covariates:**
 
     * Country or Region
-    * Population Size
     * Time or Year
+    * Strain
+    * GDP
     
 **Visualizations:**
 
-    * Positive influenza cases over time
+    * Positive influenza cases over time, measured by year and epi week
     * Seasonal vs. pandemic influenza 
+    * Seasonality of influenza by region and/or by strain
     
 **Coding Challenges:**
 
-Scale of Data/ Granularity 
+A few coding challenges that we expect to face are the scale of the data, and lack of granularity.  The data is countrywide, and density and urbanization are possible confounders that we may not be able to control for.  There is also different sources for our data, which can pose challenges merging the datasets.  
 
 **Planned timeline:**
 
