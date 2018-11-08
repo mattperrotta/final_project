@@ -18,7 +18,7 @@ November 8, 2018
 
 All four of us are in the Infectious Disease Epidemiology Concentration and are interested in becoming aquainted with ID Epi modeling in R.
 
-Last year, in 2018, nearly 80,000 people died from the flu in the US alone. (<https://www.cnn.com/2018/09/26/health/flu-deaths-2017--2018-cdc-bn/index.html>)
+Last year, in 2018, nearly 80,000 people died from the flu in the US alone. *Check out the article [here](https://www.cnn.com/2018/09/26/health/flu-deaths-2017--2018-cdc-bn/index.html).*
 
 Many scholars argue that there is an impending 'global threat of avian flu' due to rapid globalization and urbanization.
 
@@ -26,7 +26,7 @@ Understanding current patterns and trends of flu could be useful to build strong
 
 **Final products:**
 
-**Anticipated data sources:** WHO FluNet (<http://apps.who.int/flumart/Default?ReportNo=12>)
+**Anticipated data sources:** *The [WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12).*
 
 **Planned analyses:**
 
