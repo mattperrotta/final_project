@@ -1,23 +1,36 @@
 Proposal
 ================
-Matthew Perrotta
+THE Infectious Disease Data Science Team
 November 7, 2018
 
 ### Team Members
 
+-   Thomas Carpino (tc2899)
+-   George Keefer (gwk2111)
 -   Matthew Perrotta (mp3653)
--   George Keefer ()
--   Thomas Caprino ()
--   Elliot ()
+-   Elliot Rozen (er2867)
 
-Title
+### Project
 
-Motivation
+**Title:** Global Influenza Trends
 
-Final products
+**Motivation:**
 
-Anticipated data sources
+All four of us are in the Infectious Disease Epidemiology Concentration and are interested in becoming aquainted with ID Epi modeling in R.
 
-Planned analyses / visualizations / coding challenges
+Last year, in 2018, nearly 80,000 people died from the flu in the US alone. (<https://www.cnn.com/2018/09/26/health/flu-deaths-2017--2018-cdc-bn/index.html>)
 
-Planned timeline
+**Final products:**
+
+**Anticipated data sources:** WHO FluNet (<http://apps.who.int/flumart/Default?ReportNo=12>)
+
+**Planned analyses:**
+
+**Visualizations:**
+
+    * Positive influenza cases over time
+    * Seasonal vs. pandemic influenza 
+
+**Coding Challenges:**
+
+**Planned timeline:**
