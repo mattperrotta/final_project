@@ -51,16 +51,16 @@ Scale of Data/ Granularity
 
 **Planned timeline:**
 
-Week 1: Nov 5-8 \* Proposal due 8th
-
-Week 2: Nov 12-16 \* Project Review \* In Person Meeting
-
-Week 3: Nov 19-23
-
-Week 4: Nov 26-30
-
-Week 5: Dec 3-7
-
-December 6th: \* Report, Webpage, and Screencast Due (4pm) \* Peer Assessment Due (8pm)
-
-Week 6: Dec 10-14 \* December 11 \* In Class Presentations
+-   Week 1: Nov 5-8
+    -   Proposal due Nov 8th
+-   Week 2: Nov 12-16
+    -   Project Review
+    -   In Person Meeting
+-   Week 3: Nov 19-23
+-   Week 4: Nov 26-30
+-   Week 5: Dec 3-7
+    -   December 6th:
+    -   Report, Webpage, and Screencast Due (4pm)
+    -   Peer Assessment Due (8pm)
+-   Week 6: Dec 10-14
+    -   Presentations December 11
