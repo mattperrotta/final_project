@@ -1,26 +1,33 @@
 ---
 title: "Proposal"
-author: "Matthew Perrotta"
+author: "THE Infectious Disease Data Science Team"
 date: "November 7, 2018"
 output: github_document
 ---
 
 ### Team Members
-  * Matthew Perrotta (mp3653)
-  * George Keefer (gwk2111)
   * Thomas Carpino (tc2899)
+  * George Keefer (gwk2111)
+  * Matthew Perrotta (mp3653)
   * Elliot Rozen (er2867)
 
 ### Project
 
-Title
+**Title:** Global Influenza Trends 
 
-Motivation
+**Motivation:** 
 
-Final products
+**Final products:**
 
-Anticipated data sources
+**Anticipated data sources:** WHO FluNet (http://apps.who.int/flumart/Default?ReportNo=12)
 
-Planned analyses / visualizations / coding challenges
+**Planned analyses:**
 
-Planned timeline
+**Visualizations:**
+
+    * Positive influenza cases over time
+    * Seasonal vs. pandemic influenza 
+    
+**Coding Challenges:**
+
+**Planned timeline:**
