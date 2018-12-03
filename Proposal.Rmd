@@ -28,6 +28,8 @@ Understanding current patterns and trends of flu could be useful to build strong
 
 Specifically, we want to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.  
 
+Google flu trends
+
 **Final products/Deliverables:**
 
 Report, Statistical Analyses, Webpage, and Screencast
