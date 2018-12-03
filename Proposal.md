@@ -24,30 +24,40 @@ Many scholars argue that there is an impending 'global threat of avian flu' due 
 
 Understanding current patterns and trends of flu could be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness.
 
+Specifically, we want to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.
+
 **Final products/Deliverables:**
 
 Report, Statistical Analyses, Webpage, and Screencast
 
-**Anticipated data sources:** *The [WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12).*
+**Anticipated data sources:**
+
+*[The WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12).*
+
+*[CIA World Factbook](https://www.cia.gov/library/publications/the-world-factbook/)* (For demographic data - obtained through scraping)
 
 **Planned analyses:**
 
-Linear Models
+    * Logisitic Regression with outcome of epidemic threshold with interaction from various covariates
+    * Linear Regression of rate vs seasonality
 
 **Potential Indicators or Covariates:**
 
     * Country or Region
-    * Population Size
     * Time or Year
+    * Strain
+    * GDP
+    * Urbanization
 
 **Visualizations:**
 
-    * Positive influenza cases over time
+    * Positive influenza cases over time, measured by year and epi week
     * Seasonal vs. pandemic influenza 
+    * Seasonality of influenza by region and/or by strain
 
 **Coding Challenges:**
 
-Scale of Data/ Granularity
+A few coding challenges that we expect to face are the scale of the data, and lack of granularity. The data is countrywide, and density and urbanization are possible confounders that we may not be able to control for. There is also different sources for our data, which can pose challenges merging the datasets.
 
 **Planned timeline:**
 
@@ -57,10 +67,17 @@ Scale of Data/ Granularity
     -   Project Review
     -   In Person Meeting
 -   Week 3: Nov 19-23
+    -   Download/scrape, consolidate, clean, tidy data
+    -   Run interim models
+    -   Visualizations
 -   Week 4: Nov 26-30
+    -   Write report
+    -   Create webpage
+    -   Screencast
 -   Week 5: Dec 3-7
     -   December 6th:
     -   Report, Webpage, and Screencast Due (4pm)
     -   Peer Assessment Due (8pm)
+    -   Final review
 -   Week 6: Dec 10-14
     -   Presentations December 11
