@@ -1,0 +1,27 @@
+---
+title: "Tom Carpino's Webpage"
+---
+
+### Introduction
+
+Tom Carpino is a dedicated, innovative, and skilled data analyst experienced in SAS, SQL, and quality improvement seeking full-time healthcare or business strategy consulting or analyst positions to start in Summer 2019. 
+
+I have worked on numerous diverse teams in high-intensity challenges, hackathons, and competitions. This has been highlighted in solutions to healthcare cases at Johns Hopkins and Yale, in topics ranging from stem cell banking and therapy to wearable medical devices. Additionally, I was an invited participant through the Broad Institute of Harvard and MIT to compete in a queer health hackathon to increase awareness of health disparities amongst LGBTQ individuals. 
+
+Other past projects and experience include strategic development and project management for a tech startup, Columbia's workplace design challenge, ecological modeling in Portugal, and monitoring and evaluation at a public hospital in the Dominican Republic. I also have significant experience in epidemiologic outbreak investigation and infection prevention.
+
+### Important Information and Links 
+
+I also linked my resume in the [Professional Experience](Experience.html) tab. 
+
+Tom's Github account can be found [here](https://github.com/tomcarpino), which is also listed in the top right Github icon.  
+
+Tom's email can be found using the mail icon tool on the top right.  
+
+### Headshot
+ 
+<img src="Images/headshot.jpg" style="width:75%"> 
+
+### Website Creation 
+
+Information abou thow this website was created can be found under the [About](About.html) tab. 

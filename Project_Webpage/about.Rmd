@@ -1,0 +1,11 @@
+---
+title: "About"
+---
+
+### About this site
+
+This website was made using Rstudio by Tom Carpino. 
+
+Last update on November 1, 2018. 
+
+

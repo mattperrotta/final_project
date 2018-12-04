@@ -1,0 +1,11 @@
+---
+title: "Experience"
+---
+
+### Professional Experience 
+
+Check out my [LinkedIn Profile](https://linkedin.com/in/tomcarpino/).
+
+PDF does not appear to be working; 
+
+<img src="Documents/resume.pdf" alt="Just see my LinkedIn Profile Above :)"  width="4200" height="4200">
