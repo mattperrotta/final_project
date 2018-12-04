@@ -1,8 +1,5 @@
 ---
 title: "Exploratory Analysis"
-author: "Team ID Epi x DataSci"
-date: "December 4, 2018"
-output: html_document
 ---
 
 ```{r setup, include=FALSE}
