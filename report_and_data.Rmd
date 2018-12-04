@@ -130,11 +130,6 @@ flu_demo_df %>%
   facet_wrap(~ fluregion)
 ```
 
-```{r}
-flu_demo_df %>% 
-  filter(fluregion == "Middle Africa") %>% 
-  knitr::kable()
-```
 
 
 ```{r}
@@ -177,7 +172,9 @@ Looking at distribution of influenza types and subtypes
 NoAm = tidy_flu_3 %>% 
   filter(fluregion == 'North America') %>% 
   ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) + 
   geom_line(aes(x = week, y = b_total, color = 'Type B')) +
   facet_grid(~ year) +
   labs(
@@ -188,7 +185,9 @@ NoAm = tidy_flu_3 %>%
 NoEu = tidy_flu_3 %>% 
   filter(fluregion == 'Northern Europe') %>% 
   ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
   geom_line(aes(x = week, y = b_total, color = 'Type B')) +
   facet_grid(~ year) +
   labs(
@@ -199,7 +198,9 @@ NoEu = tidy_flu_3 %>%
 OMP = tidy_flu_3 %>% 
   filter(fluregion == 'Oceania Melanesia Polynesia') %>% 
   ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
   geom_line(aes(x = week, y = b_total, color = 'Type B')) +
   facet_grid(~ year) +
   labs(
@@ -210,7 +211,9 @@ OMP = tidy_flu_3 %>%
 TSA = tidy_flu_3 %>% 
   filter(fluregion == 'Temperate South America') %>% 
   ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
   geom_line(aes(x = week, y = b_total, color = 'Type B')) +
   facet_grid(~ year) +
   labs(
@@ -221,7 +224,9 @@ TSA = tidy_flu_3 %>%
 EaAs = tidy_flu_3 %>% 
   filter(fluregion == 'Eastern Asia') %>% 
   ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
   geom_line(aes(x = week, y = b_total, color = 'Type B')) +
   facet_grid(~ year) +
   labs(
@@ -238,9 +243,9 @@ tidy_flu_3 %>%
   filter(fluregion == 'North America') %>% 
   ggplot() +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
-  #geom_line(aes(x = week, y = h3, color = 'H3')) +
-  #geom_line(aes(x = week, y = h5, color = 'H5')) +
-  facet_grid(~ year) #+
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
+  facet_grid(~ year) +
   labs(
     title = 'North America',
     y = 'Cases'
