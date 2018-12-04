@@ -1,14 +1,14 @@
 ---
-title: "Tom Carpino's Webpage"
+title: "Index"
 ---
 
-### Introduction
+**Title:** Global Influenza Trends 
 
-Tom Carpino is a dedicated, innovative, and skilled data analyst experienced in SAS, SQL, and quality improvement seeking full-time healthcare or business strategy consulting or analyst positions to start in Summer 2019. 
-
-I have worked on numerous diverse teams in high-intensity challenges, hackathons, and competitions. This has been highlighted in solutions to healthcare cases at Johns Hopkins and Yale, in topics ranging from stem cell banking and therapy to wearable medical devices. Additionally, I was an invited participant through the Broad Institute of Harvard and MIT to compete in a queer health hackathon to increase awareness of health disparities amongst LGBTQ individuals. 
-
-Other past projects and experience include strategic development and project management for a tech startup, Columbia's workplace design challenge, ecological modeling in Portugal, and monitoring and evaluation at a public hospital in the Dominican Republic. I also have significant experience in epidemiologic outbreak investigation and infection prevention.
+### Team Members
+  * Thomas Carpino (tc2899)
+  * George Keefer (gwk2111)
+  * Matthew Perrotta (mp3653)
+  * Elliot Rozen (er2867)
 
 ### Important Information and Links 
 
@@ -17,6 +17,57 @@ I also linked my resume in the [Professional Experience](Experience.html) tab.
 Tom's Github account can be found [here](https://github.com/tomcarpino), which is also listed in the top right Github icon.  
 
 Tom's email can be found using the mail icon tool on the top right.  
+Our data can be found [here](https://drive.google.com/drive/folders/1FcazPStI8FsAdQDWsujyn_jsFByolMC0?usp=sharing).
+
+**Motivation:** 
+
+All four of us are in the Infectious Disease Epidemiology Concentration and are interested in becoming aquainted with ID Epi modeling in R. 
+
+Last year, in 2018, nearly 80,000 people died from the flu in the US alone. 
+_Check out the article [here](https://www.cnn.com/2018/09/26/health/flu-deaths-2017--2018-cdc-bn/index.html)._
+
+Many scholars argue that there is an impending 'global threat of avian flu' due to rapid globalization and urbanization. 
+
+Understanding current patterns and trends of flu could be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. 
+
+Specifically, we want to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.  
+
+Google flu trends
+
+**Final products/Deliverables:**
+
+Report, Statistical Analyses, Webpage, and Screencast
+
+**Anticipated data sources:** 
+
+_[The WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12)._
+
+
+_[CIA World Factbook](https://www.cia.gov/library/publications/the-world-factbook/)_ (For demographic data - obtained through scraping)
+
+**Planned analyses:**
+
+    * Logisitic Regression with outcome of epidemic threshold with interaction from various covariates
+    * Linear Regression of rate vs seasonality
+  
+**Potential Indicators or Covariates:**
+
+    * Country or Region
+    * Time or Year
+    * Strain
+    * GDP
+    * Urbanization
+    
+**Visualizations:**
+
+    * Positive influenza cases over time, measured by year and epi week
+    * Seasonal vs. pandemic influenza 
+    * Seasonality of influenza by region and/or by strain
+    
+**Coding Challenges:**
+
+A few coding challenges that we expect to face are the scale of the data, and lack of granularity.  The data is countrywide, and density and urbanization are possible confounders that we may not be able to control for.  There is also different sources for our data, which can pose challenges merging the datasets.  
+
 
 ### Headshot
  
