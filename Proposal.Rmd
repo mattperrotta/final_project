@@ -13,7 +13,7 @@ output: github_document
 
 ### Project
 
-**Title:** Global Influenza Trends 
+**Title:** Global Influenza Trends by WHO Region 
 
 **Motivation:** 
 
