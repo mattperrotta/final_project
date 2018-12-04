@@ -59,7 +59,6 @@ tidy_flu = flu_df %>%
 ```
 
 
-
 ```{r}
 countries = flu_df %>% 
   ##dataset to use to bind demographic data
@@ -115,3 +114,44 @@ flu_region_demo = country_demo %>%
             drs_per_100k = mean(drs, na.rm = TRUE))
 ```
 
+```{r}
+flu_demo_df = left_join(tidy_flu, flu_region_demo, by = "fluregion") %>% 
+  mutate(cases_by_1k = (cases*1000)/population)
+```
+
+
+
+```{r}
+flu_demo_df %>% 
+  ggplot(aes(x = epiweek, y = cases_by_1k)) +
+  geom_line() +
+  facet_wrap(~ fluregion)
+```
+
+```{r}
+flu_demo_df %>% 
+  filter(fluregion == "Middle Africa") %>% 
+  knitr::kable()
+```
+
+
+```{r}
+tidy_flu_2 = flu_df %>% 
+  mutate(week = as.numeric(week),
+         year = as.factor(year)) %>% 
+  group_by(fluregion, year, week) %>% 
+    summarize(cases = sum(all_inf),
+            h1 = sum(ah1),
+            h3 = sum(ah3),
+            h5 = sum(ah5),
+            a_total = sum(inf_a),
+            b_total = sum(inf_b)) %>% 
+  left_join(flu_region_demo, by = "fluregion") %>% 
+  mutate(cases_by_1k = (cases*1000)/population)
+
+tidy_flu_2 %>% 
+  ggplot(aes(x = week, y = cases_by_1k, color = year)) +
+  geom_line() +
+  facet_wrap(~ fluregion)
+  
+```
