@@ -3,15 +3,11 @@ output_dir: "."
 navbar:
   title: "Home"
   right:
-    - text: "About this Site"
+    - text: "About"
       href: about.html
-    - text: "Team's Experience"
-      href: Experience.html
-    - text: "Exploratory Analysis"
-      href: Exploratory_Analysis.html
     - icon: fa-envelope fa-lg
-      href: mailto:<tc2899@cumc.columbia.edu>
+      href: mailto:<you@youremail.com>
     - icon: fa-github fa-lg
-      href: http://github.com/tomcarpino/
+      href: http://github.com/<tomcarpino>/
 output:
   html_document

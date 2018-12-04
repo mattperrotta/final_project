@@ -1,0 +1,17 @@
+---
+title: "About this Site"
+---
+
+This website was made using Rstudio by Tom Carpino. 
+
+You can find out more about the team in the [Team's Experience](Experience.html) tab. 
+
+
+### Links and Information
+
+You can email Tom email using the mail icon tool on the top right.  
+
+Tom's Github account can be found [here](https://github.com/tomcarpino), which is also listed in the top right Github icon.  
+
+Last update on December 4, 2018.
+

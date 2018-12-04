@@ -1,0 +1,78 @@
+---
+title: "Index"
+---
+
+**Title:** Global Influenza Trends 
+
+### Team Members
+  * Thomas Carpino (tc2899)
+  * George Keefer (gwk2111)
+  * Matthew Perrotta (mp3653)
+  * Elliot Rozen (er2867)
+
+### Important Information and Links 
+
+More information about the team can be found in the [Experience](Experience.html) tab. 
+
+THE REPO FOR THIS*** account can be found [here](https://github.com/tomcarpino), which is also listed in the top right Github icon.  
+_
+SOMEONE*** email can be found using the mail icon tool on the top right.  
+Our data can be found [here](https://drive.google.com/drive/folders/1FcazPStI8FsAdQDWsujyn_jsFByolMC0?usp=sharing).
+
+**Motivation:** 
+
+All four of us are in the Infectious Disease Epidemiology Concentration and are interested in becoming aquainted with ID Epi modeling in R. 
+
+Last year, in 2018, nearly 80,000 people died from the flu in the US alone. 
+_Check out the article [here](https://www.cnn.com/2018/09/26/health/flu-deaths-2017--2018-cdc-bn/index.html)._
+
+Many scholars argue that there is an impending 'global threat of avian flu' due to rapid globalization and urbanization. 
+
+Understanding current patterns and trends of flu could be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. 
+
+Specifically, we want to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.  
+
+Google flu trends
+
+**Final products/Deliverables:**
+
+Report, Statistical Analyses, Webpage, and Screencast
+
+**Anticipated data sources:** 
+
+_[The WHO FluNet](http://apps.who.int/flumart/Default?ReportNo=12)._
+
+
+_[CIA World Factbook](https://www.cia.gov/library/publications/the-world-factbook/)_ (For demographic data - obtained through scraping)
+
+**Planned analyses:**
+
+    * Logisitic Regression with outcome of epidemic threshold with interaction from various covariates
+    * Linear Regression of rate vs seasonality
+  
+**Potential Indicators or Covariates:**
+
+    * Country or Region
+    * Time or Year
+    * Strain
+    * GDP
+    * Urbanization
+    
+**Visualizations:**
+
+    * Positive influenza cases over time, measured by year and epi week
+    * Seasonal vs. pandemic influenza 
+    * Seasonality of influenza by region and/or by strain
+    
+**Coding Challenges:**
+
+A few coding challenges that we expect to face are the scale of the data, and lack of granularity.  The data is countrywide, and density and urbanization are possible confounders that we may not be able to control for.  There is also different sources for our data, which can pose challenges merging the datasets.  
+
+
+### Headshot
+ 
+<img src="Images/headshot.jpg" style="width:75%"> 
+
+### Website Creation 
+
+Information abou thow this website was created can be found under the [About](About.html) tab. 
