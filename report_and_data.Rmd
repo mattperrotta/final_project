@@ -237,9 +237,9 @@ Looking at type A subtypes
 tidy_flu_3 %>% 
   filter(fluregion == 'North America') %>% 
   ggplot() +
-  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
-  #geom_line(aes(x = week, y = h3, color = 'H3')) +
-  #geom_line(aes(x = week, y = h5, color = 'H5')) +
+  geom_line(aes(x = week, y = h1n1, color = 'H1N1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
   facet_grid(~ year) #+
   labs(
     title = 'North America',
