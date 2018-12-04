@@ -10,9 +10,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(dplyr)
+library(readxl)
 ```
 
+
+
 ```{r}
+##Reading in the flu data.  Files were too large to query all at once
 flu_1 = read.csv("./ds_final_data/flu_1_4.csv", skip = 3)
 
 flu_2 = read.csv("./ds_final_data/flu_5_8.csv", skip = 3)
@@ -24,8 +28,10 @@ flu_4 = read.csv("./ds_final_data/flu_13_18.csv", skip = 3)
 
 
 ```{r}
+##Binding the data rows
 flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %>% 
   janitor::clean_names() %>% 
+  ##Creating an epiweek variable that is ordinal
   mutate(week = as.character(week),
          week = ifelse(week == "1", "01", week),
          week = ifelse(week == "2", "02", week),
@@ -37,12 +43,75 @@ flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %>%
          week = ifelse(week == "8", "08", week),
          week = ifelse(week == "9", "09", week),
          epiweek = str_c(year, week, sep = "."),
-         epiweek = as.numeric(epiweek))
+         epiweek = as.numeric(epiweek)) 
 ```
 
 ```{r}
+tidy_flu = flu_df %>% 
+  ##Tidy flu data set to use for visualizations
+  group_by(fluregion, epiweek) %>% 
+  summarize(cases = sum(all_inf),
+            h1 = sum(ah1),
+            h3 = sum(ah3),
+            h5 = sum(ah5),
+            a_total = sum(inf_a),
+            b_total = sum(inf_b))
+```
+
+
+
+```{r}
 countries = flu_df %>% 
+  ##dataset to use to bind demographic data
   group_by(fluregion, country) %>% 
   summarize(infections = sum(all_inf))
+```
+
+
+Reading in and cleaning demographic data
+```{r}
+arrival_df = read_excel("./ds_final_data/arrival_data.xls", skip = 3) %>% 
+  janitor::clean_names() %>% 
+  select(country, country_code, x2012:x2014) %>% 
+  gather(key = year, value = arrivals, x2012:x2014) %>% 
+  group_by(country) %>% 
+  summarize(mean_arrival = mean(arrivals))
+```
+
+```{r}
+pop_df = read_excel("./ds_final_data/pop_data.xls", skip = 3) %>% 
+  janitor::clean_names() %>% 
+  select(country, country_code, x2012:x2014) %>% 
+  gather(key = year, value = pop, x2012:x2014) %>% 
+  group_by(country) %>% 
+  summarize(mean_pop = mean(pop))
+```
+
+```{r}
+drs_df = read_excel("./ds_final_data/dr_per_100k_data.xls") %>% 
+  janitor::clean_names() %>% 
+  mutate(drs_per_100k = as.numeric(drs_per_100k)) %>% 
+  group_by(country) %>% 
+  summarize(drs = mean(drs_per_100k))
+```
+
+Joining Demo data
+```{r}
+country_demo = left_join(countries, pop_df, by = "country")
+
+country_demo = left_join(country_demo, arrival_df, by = "country")
+
+country_demo = left_join(country_demo, drs_df, by = "country")
+```
+
+
+Tidy demo data df.
+```{r}
+flu_region_demo = country_demo %>% 
+  group_by(fluregion) %>% 
+  summarize(infections = sum(infections),
+            population = sum(mean_pop, na.rm = TRUE),
+            arrivals = sum(mean_arrival, na.rm = TRUE),
+            drs_per_100k = mean(drs, na.rm = TRUE))
 ```
 

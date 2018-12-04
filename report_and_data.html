@@ -128,15 +128,18 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>flu_1 = read.csv(&quot;./ds_final_data/flu_1_4.csv&quot;, skip = 3)
+<pre class="r"><code>##Reading in the flu data.  Files were too large to query all at once
+flu_1 = read.csv(&quot;./ds_final_data/flu_1_4.csv&quot;, skip = 3)
 
 flu_2 = read.csv(&quot;./ds_final_data/flu_5_8.csv&quot;, skip = 3)
 
 flu_3 = read.csv(&quot;./ds_final_data/flu_9_12.csv&quot;, skip = 3)
 
 flu_4 = read.csv(&quot;./ds_final_data/flu_13_18.csv&quot;, skip = 3)</code></pre>
-<pre class="r"><code>flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %&gt;% 
+<pre class="r"><code>##Binding the data rows
+flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %&gt;% 
   janitor::clean_names() %&gt;% 
+  ##Creating an epiweek variable that is ordinal
   mutate(week = as.character(week),
          week = ifelse(week == &quot;1&quot;, &quot;01&quot;, week),
          week = ifelse(week == &quot;2&quot;, &quot;02&quot;, week),
@@ -148,7 +151,7 @@ flu_4 = read.csv(&quot;./ds_final_data/flu_13_18.csv&quot;, skip = 3)</code></pr
          week = ifelse(week == &quot;8&quot;, &quot;08&quot;, week),
          week = ifelse(week == &quot;9&quot;, &quot;09&quot;, week),
          epiweek = str_c(year, week, sep = &quot;.&quot;),
-         epiweek = as.numeric(epiweek))</code></pre>
+         epiweek = as.numeric(epiweek)) </code></pre>
 <pre><code>## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character</code></pre>
 <pre><code>## Warning in bind_rows_(x, .id): binding character and factor vector,
 ## coercing into character vector
@@ -185,9 +188,50 @@ flu_4 = read.csv(&quot;./ds_final_data/flu_13_18.csv&quot;, skip = 3)</code></pr
 
 ## Warning in bind_rows_(x, .id): binding character and factor vector,
 ## coercing into character vector</code></pre>
+<pre class="r"><code>tidy_flu = flu_df %&gt;% 
+  ##Tidy flu data set to use for visualizations
+  group_by(fluregion, epiweek) %&gt;% 
+  summarize(cases = sum(all_inf),
+            h1 = sum(ah1),
+            h3 = sum(ah3),
+            h5 = sum(ah5),
+            a_total = sum(inf_a),
+            b_total = sum(inf_b))</code></pre>
 <pre class="r"><code>countries = flu_df %&gt;% 
+  ##dataset to use to bind demographic data
   group_by(fluregion, country) %&gt;% 
   summarize(infections = sum(all_inf))</code></pre>
+<p>Reading in and cleaning demographic data</p>
+<pre class="r"><code>arrival_df = read_excel(&quot;./ds_final_data/arrival_data.xls&quot;, skip = 3) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  select(country, country_code, x2012:x2014) %&gt;% 
+  gather(key = year, value = arrivals, x2012:x2014) %&gt;% 
+  group_by(country) %&gt;% 
+  summarize(mean_arrival = mean(arrivals))</code></pre>
+<pre class="r"><code>pop_df = read_excel(&quot;./ds_final_data/pop_data.xls&quot;, skip = 3) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  select(country, country_code, x2012:x2014) %&gt;% 
+  gather(key = year, value = pop, x2012:x2014) %&gt;% 
+  group_by(country) %&gt;% 
+  summarize(mean_pop = mean(pop))</code></pre>
+<pre class="r"><code>drs_df = read_excel(&quot;./ds_final_data/dr_per_100k_data.xls&quot;) %&gt;% 
+  janitor::clean_names() %&gt;% 
+  mutate(drs_per_100k = as.numeric(drs_per_100k)) %&gt;% 
+  group_by(country) %&gt;% 
+  summarize(drs = mean(drs_per_100k))</code></pre>
+<p>Joining Demo data</p>
+<pre class="r"><code>country_demo = left_join(countries, pop_df, by = &quot;country&quot;)
+
+country_demo = left_join(country_demo, arrival_df, by = &quot;country&quot;)
+
+country_demo = left_join(country_demo, drs_df, by = &quot;country&quot;)</code></pre>
+<p>Tidy demo data df.</p>
+<pre class="r"><code>flu_region_demo = country_demo %&gt;% 
+  group_by(fluregion) %&gt;% 
+  summarize(infections = sum(infections),
+            population = sum(mean_pop, na.rm = TRUE),
+            arrivals = sum(mean_arrival, na.rm = TRUE),
+            drs_per_100k = mean(drs, na.rm = TRUE))</code></pre>
 
 
 
