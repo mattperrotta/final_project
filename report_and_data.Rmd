@@ -17,13 +17,13 @@ library(readxl)
 
 ```{r}
 ##Reading in the flu data.  Files were too large to query all at once
-flu_1 = read.csv("./ds_final_data/flu_1_4.csv", skip = 3)
+flu_1 = read.csv("./data/flu_1_4.csv", skip = 3)
 
-flu_2 = read.csv("./ds_final_data/flu_5_8.csv", skip = 3)
+flu_2 = read.csv("./data/flu_5_8.csv", skip = 3)
 
-flu_3 = read.csv("./ds_final_data/flu_9_12.csv", skip = 3)
+flu_3 = read.csv("./data/flu_9_12.csv", skip = 3)
 
-flu_4 = read.csv("./ds_final_data/flu_13_18.csv", skip = 3)
+flu_4 = read.csv("./data/flu_13_18.csv", skip = 3)
 ```
 
 
@@ -70,7 +70,7 @@ countries = flu_df %>%
 
 Reading in and cleaning demographic data
 ```{r}
-arrival_df = read_excel("./ds_final_data/arrival_data.xls", skip = 3) %>% 
+arrival_df = read_excel("./data/arrival_data.xls", skip = 3) %>% 
   janitor::clean_names() %>% 
   select(country, country_code, x2012:x2014) %>% 
   gather(key = year, value = arrivals, x2012:x2014) %>% 
@@ -79,7 +79,7 @@ arrival_df = read_excel("./ds_final_data/arrival_data.xls", skip = 3) %>%
 ```
 
 ```{r}
-pop_df = read_excel("./ds_final_data/pop_data.xls", skip = 3) %>% 
+pop_df = read_excel("./data/pop_data.xls", skip = 3) %>% 
   janitor::clean_names() %>% 
   select(country, country_code, x2012:x2014) %>% 
   gather(key = year, value = pop, x2012:x2014) %>% 
@@ -88,7 +88,7 @@ pop_df = read_excel("./ds_final_data/pop_data.xls", skip = 3) %>%
 ```
 
 ```{r}
-drs_df = read_excel("./ds_final_data/dr_per_100k_data.xls") %>% 
+drs_df = read_excel("./data/dr_per_100k_data.xls") %>% 
   janitor::clean_names() %>% 
   mutate(drs_per_100k = as.numeric(drs_per_100k)) %>% 
   group_by(country) %>% 

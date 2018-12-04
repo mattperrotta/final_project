@@ -129,13 +129,13 @@ $(document).ready(function () {
 
 
 <pre class="r"><code>##Reading in the flu data.  Files were too large to query all at once
-flu_1 = read.csv(&quot;./ds_final_data/flu_1_4.csv&quot;, skip = 3)
+flu_1 = read.csv(&quot;./data/flu_1_4.csv&quot;, skip = 3)
 
-flu_2 = read.csv(&quot;./ds_final_data/flu_5_8.csv&quot;, skip = 3)
+flu_2 = read.csv(&quot;./data/flu_5_8.csv&quot;, skip = 3)
 
-flu_3 = read.csv(&quot;./ds_final_data/flu_9_12.csv&quot;, skip = 3)
+flu_3 = read.csv(&quot;./data/flu_9_12.csv&quot;, skip = 3)
 
-flu_4 = read.csv(&quot;./ds_final_data/flu_13_18.csv&quot;, skip = 3)</code></pre>
+flu_4 = read.csv(&quot;./data/flu_13_18.csv&quot;, skip = 3)</code></pre>
 <pre class="r"><code>##Binding the data rows
 flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %&gt;% 
   janitor::clean_names() %&gt;% 
@@ -202,19 +202,19 @@ flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %&gt;%
   group_by(fluregion, country) %&gt;% 
   summarize(infections = sum(all_inf))</code></pre>
 <p>Reading in and cleaning demographic data</p>
-<pre class="r"><code>arrival_df = read_excel(&quot;./ds_final_data/arrival_data.xls&quot;, skip = 3) %&gt;% 
+<pre class="r"><code>arrival_df = read_excel(&quot;./data/arrival_data.xls&quot;, skip = 3) %&gt;% 
   janitor::clean_names() %&gt;% 
   select(country, country_code, x2012:x2014) %&gt;% 
   gather(key = year, value = arrivals, x2012:x2014) %&gt;% 
   group_by(country) %&gt;% 
   summarize(mean_arrival = mean(arrivals))</code></pre>
-<pre class="r"><code>pop_df = read_excel(&quot;./ds_final_data/pop_data.xls&quot;, skip = 3) %&gt;% 
+<pre class="r"><code>pop_df = read_excel(&quot;./data/pop_data.xls&quot;, skip = 3) %&gt;% 
   janitor::clean_names() %&gt;% 
   select(country, country_code, x2012:x2014) %&gt;% 
   gather(key = year, value = pop, x2012:x2014) %&gt;% 
   group_by(country) %&gt;% 
   summarize(mean_pop = mean(pop))</code></pre>
-<pre class="r"><code>drs_df = read_excel(&quot;./ds_final_data/dr_per_100k_data.xls&quot;) %&gt;% 
+<pre class="r"><code>drs_df = read_excel(&quot;./data/dr_per_100k_data.xls&quot;) %&gt;% 
   janitor::clean_names() %&gt;% 
   mutate(drs_per_100k = as.numeric(drs_per_100k)) %&gt;% 
   group_by(country) %&gt;% 
