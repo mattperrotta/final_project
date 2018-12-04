@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(readxl)
+library(patchwork)
 ```
 
 
@@ -155,3 +156,77 @@ tidy_flu_2 %>%
   facet_wrap(~ fluregion)
   
 ```
+
+The zones with the most complete data are North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America
+
+```{r}
+#Filter flu data for zones of interest
+tidy_flu_3 = tidy_flu_2 %>% 
+  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) 
+
+tidy_flu_3 %>% 
+  ggplot(aes(x = week, y = cases_by_1k, color = year)) +
+  geom_line() +
+  facet_wrap(~ fluregion)
+```
+
+Looking at distribution of influenza types and subtypes
+```{r}
+NoAm = tidy_flu_3 %>% 
+  filter(fluregion == 'North America') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = b_total, color = 'Type B')) +
+  facet_grid(~ year) +
+  labs(
+    title = 'North America',
+    y = 'Cases'
+  )
+
+NoEu = tidy_flu_3 %>% 
+  filter(fluregion == 'Northern Europe') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = b_total, color = 'Type B')) +
+  facet_grid(~ year) +
+  labs(
+    title = 'Northern Europe',
+    y = 'Cases'
+  )
+
+OMP = tidy_flu_3 %>% 
+  filter(fluregion == 'Oceania Melanesia Polynesia') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = b_total, color = 'Type B')) +
+  facet_grid(~ year) +
+  labs(
+    title = 'Oceania Melanesia Polynesia',
+    y = 'Cases'
+  )
+
+TSA = tidy_flu_3 %>% 
+  filter(fluregion == 'Temperate South America') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = b_total, color = 'Type B')) +
+  facet_grid(~ year) +
+  labs(
+    title = 'Temperate South America',
+    y = 'Cases'
+  )
+
+EaAs = tidy_flu_3 %>% 
+  filter(fluregion == 'Eastern Asia') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Type A')) +
+  geom_line(aes(x = week, y = b_total, color = 'Type B')) +
+  facet_grid(~ year) +
+  labs(
+    title = 'Eastern Asia',
+    y = 'Cases'
+  )
+
+NoAm / NoEu / OMP / TSA / EaAs
+```
+
