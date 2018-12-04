@@ -55,6 +55,7 @@ tidy_flu = flu_df %>%
             h1 = sum(ah1),
             h3 = sum(ah3),
             h5 = sum(ah5),
+            h1n1 = sum(ah1n12009),
             a_total = sum(inf_a),
             b_total = sum(inf_b))
 ```
@@ -145,6 +146,7 @@ tidy_flu_2 = flu_df %>%
             h1 = sum(ah1),
             h3 = sum(ah3),
             h5 = sum(ah5),
+            h1n1 = sum(ah1n12009),
             a_total = sum(inf_a),
             b_total = sum(inf_b)) %>% 
   left_join(flu_region_demo, by = "fluregion") %>% 
@@ -228,5 +230,20 @@ EaAs = tidy_flu_3 %>%
   )
 
 NoAm / NoEu / OMP / TSA / EaAs
+```
+
+Looking at type A subtypes
+```{r}
+tidy_flu_3 %>% 
+  filter(fluregion == 'North America') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  #geom_line(aes(x = week, y = h3, color = 'H3')) +
+  #geom_line(aes(x = week, y = h5, color = 'H5')) +
+  facet_grid(~ year) #+
+  labs(
+    title = 'North America',
+    y = 'Cases'
+  )
 ```
 
