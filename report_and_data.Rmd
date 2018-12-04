@@ -1,0 +1,48 @@
+---
+title: "Data"
+author: "Zach Keefer"
+date: "12/3/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+flu_1 = read.csv("./ds_final_data/flu_1_4.csv", skip = 3)
+
+flu_2 = read.csv("./ds_final_data/flu_5_8.csv", skip = 3)
+
+flu_3 = read.csv("./ds_final_data/flu_9_12.csv", skip = 3)
+
+flu_4 = read.csv("./ds_final_data/flu_13_18.csv", skip = 3)
+```
+
+
+```{r}
+flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %>% 
+  janitor::clean_names() %>% 
+  mutate(week = as.character(week),
+         week = ifelse(week == "1", "01", week),
+         week = ifelse(week == "2", "02", week),
+         week = ifelse(week == "3", "03", week),
+         week = ifelse(week == "4", "04", week),
+         week = ifelse(week == "5", "05", week),
+         week = ifelse(week == "6", "06", week),
+         week = ifelse(week == "7", "07", week),
+         week = ifelse(week == "8", "08", week),
+         week = ifelse(week == "9", "09", week),
+         epiweek = str_c(year, week, sep = "."),
+         epiweek = as.numeric(epiweek))
+```
+
+```{r}
+countries = flu_df %>% 
+  group_by(fluregion, country) %>% 
+  summarize(infections = sum(all_inf))
+```
+
