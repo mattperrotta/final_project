@@ -18,19 +18,22 @@ library(patchwork)
 
 ```{r}
 ##Reading in the flu data.  Files were too large to query all at once
-flu_1 = read.csv("./data/flu_1_4.csv", skip = 3)
+file_df = tibble(file_path = list.files('./data/', pattern = '*.csv', full.names = TRUE), file_name = basename(file_path))
 
-flu_2 = read.csv("./data/flu_5_8.csv", skip = 3)
+read_data = function(data){
+  
+  read_csv(file = data, skip = 3)
+  
+}
 
-flu_3 = read.csv("./data/flu_9_12.csv", skip = 3)
-
-flu_4 = read.csv("./data/flu_13_18.csv", skip = 3)
+flu_df = file_df %>%
+  mutate(obs = map(file_path, read_data))
 ```
 
 
 ```{r}
 ##Binding the data rows
-flu_df = bind_rows(flu_1, flu_2, flu_3, flu_4) %>% 
+flu_df = flu_df %>%  
   janitor::clean_names() %>% 
   ##Creating an epiweek variable that is ordinal
   mutate(week = as.character(week),
