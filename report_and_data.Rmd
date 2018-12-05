@@ -61,7 +61,7 @@ Tidy flu data set to use for visualizations
 tidy_flu = flu_df %>% 
   mutate(year = as.factor(year),
          week = as.numeric(week)) %>% 
-  group_by(fluregion, epiweek, year, week) %>% 
+  group_by(fluregion, epiweek, year, week, edate) %>% 
   summarize(cases = sum(all_inf, na.rm = TRUE),
             h1 = sum(ah1, na.rm = TRUE),
             h3 = sum(ah3, na.rm = TRUE),
@@ -249,10 +249,10 @@ Creating an epidemic threshold line
 ```{r}
 tidy_practice = tidy_flu %>% 
   filter(fluregion == 'North America',
-         year == '2009')
+         year == '2008')
 
 epi_threshold_na = tidy_practice %>% 
-  glm(log(inf_a_prop) ~ week + cos(2*pi*(1/52)*week) + sin(2*pi*(1/52)*week), data = .)
+  glm(log(a_total) ~ week + cos(2*pi*(1/52)*week) + sin(2*pi*(1/52)*week), data = .)
 
 threshold_df = data.frame(epi_pred = predict(epi_threshold_na, tidy_practice), count = tidy_practice$a_total)
 
@@ -261,7 +261,13 @@ tidy_practice %>%
   geom_line(aes(x = week, y = a_total)) +
   geom_line(color = "red", data = threshold_df, aes(x = epi_pred, y = count))
 
-flu_fit <- fluserf(tidy_practice, outc = a_total, time = week, period = 52) 
+flu_fit <- fluserf(tidy_practice, outc = a_total, time = edate, period = 52) 
+
+require(flumodelr)
+fludta <- flumodelr::fludta
+flu_fit <- fluserf(fludta, outc = fludeaths, time = yrweek_dt)  
+              
+head(flu_fit)
 ```
 
 
