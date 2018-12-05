@@ -33,7 +33,8 @@ flu_df = file_df %>%
 
 ```{r}
 ##Binding the data rows
-flu_df = flu_df %>%  
+flu_df = flu_df %>%
+  unnest() %>% 
   janitor::clean_names() %>% 
   ##Creating an epiweek variable that is ordinal
   mutate(week = as.character(week),
