@@ -252,7 +252,7 @@ tidy_practice = tidy_flu %>%
          year == '2008')
 
 epi_threshold_na = tidy_practice %>% 
-  glm(log(a_total) ~ week + cos(2*pi*(1/52)*week) + sin(2*pi*(1/52)*week), data = .)
+  glm(log(a_total) ~ week + cos(2*pi*week) + sin(2*pi**week), data = .)
 
 threshold_df = data.frame(epi_pred = predict(epi_threshold_na, tidy_practice), count = tidy_practice$a_total)
 
@@ -261,13 +261,55 @@ tidy_practice %>%
   geom_line(aes(x = week, y = a_total)) +
   geom_line(color = "red", data = threshold_df, aes(x = epi_pred, y = count))
 
-flu_fit <- fluserf(tidy_practice, outc = a_total, time = edate, period = 52, epi = ) 
+flu_fit <- fluserf(tidy_practice, outc = a_total, time = week) 
 
 require(flumodelr)
 fludta <- flumodelr::fludta
 flu_fit2 <- fluserf(fludta, outc = fludeaths, time = yrweek_dt)  
               
-head(flu_fit2)
+head(flu_fit)
 ```
 
+Attempt at serfling regression and epidemic threshold
+```{r}
+tidy_practice = tidy_flu %>% 
+  filter(fluregion == 'North America',
+         year == '2008')
+
+flu_data <- tidy_flu %>% 
+  mutate(theta = 2*week/52,
+         sin_f1 = sinpi(theta),
+         cos_f1 = cospi(theta),
+         week_2 = week^2,
+         week_3 = week^3,
+         week_4 = week^4,
+         week_5 = week^5)
+
+base_fit <- flu_data %>%
+  filter(fluregion == 'North America') %>% 
+  lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 +
+       inf_a_prop + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+
+base_pred <- flu_data %>%
+  mutate(inf_a_prop = 0) %>%
+  predict(base_fit, newdata = ., se.fit = TRUE, 
+          interval = 'prediction', level = 0.90)
+
+flu_fitted <- flu_data %>%
+  add_column(., y0=base_pred$fit[,1], y0_ul=base_pred$fit[,3]) 
+```
+
+```{r}
+flu_fitted %>% 
+  mutate(week = as.numeric(week)) %>% 
+  filter(year == '2008') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+  geom_line(aes(x = week, y = y0_ul, color = 'Epi Threshold')) +
+  facet_grid(~ year)
+```
+```{r}
+flu_fitted %>% 
+  ggplot(aes(x = ))
+```
 
