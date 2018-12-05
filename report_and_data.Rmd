@@ -55,13 +55,13 @@ flu_df = flu_df %>%
 tidy_flu = flu_df %>% 
   ##Tidy flu data set to use for visualizations
   group_by(fluregion, epiweek) %>% 
-  summarize(cases = sum(all_inf),
-            h1 = sum(ah1),
-            h3 = sum(ah3),
-            h5 = sum(ah5),
-            h1n1 = sum(ah1n12009),
-            a_total = sum(inf_a),
-            b_total = sum(inf_b))
+  summarize(cases = sum(all_inf, na.rm = TRUE),
+            h1 = sum(ah1, na.rm = TRUE),
+            h3 = sum(ah3, na.rm = TRUE),
+            h5 = sum(ah5, na.rm = TRUE),
+            h1n1 = sum(ah1n12009, na.rm = TRUE),
+            a_total = sum(inf_a, na.rm = TRUE),
+            b_total = sum(inf_b, na.rm = TRUE))
 ```
 
 
@@ -77,8 +77,8 @@ Reading in and cleaning demographic data
 ```{r}
 arrival_df = read_excel("./data/arrival_data.xls", skip = 3) %>% 
   janitor::clean_names() %>% 
-  select(country, country_code, x2012:x2014) %>% 
-  gather(key = year, value = arrivals, x2012:x2014) %>% 
+  select(country, country_code, x2008:x2014) %>% 
+  gather(key = year, value = arrivals, x2008:x2014) %>% 
   group_by(country) %>% 
   summarize(mean_arrival = mean(arrivals))
 ```
@@ -86,8 +86,8 @@ arrival_df = read_excel("./data/arrival_data.xls", skip = 3) %>%
 ```{r}
 pop_df = read_excel("./data/pop_data.xls", skip = 3) %>% 
   janitor::clean_names() %>% 
-  select(country, country_code, x2012:x2014) %>% 
-  gather(key = year, value = pop, x2012:x2014) %>% 
+  select(country, country_code, x2008:x2014) %>% 
+  gather(key = year, value = pop, x2008:x2014) %>% 
   group_by(country) %>% 
   summarize(mean_pop = mean(pop))
 ```
@@ -241,6 +241,21 @@ EaAs = tidy_flu_3 %>%
 NoAm / NoEu / OMP / TSA / EaAs
 ```
 
-Looking at type A subtypes
+
+Creating an epidemic threshold line
+```{r}
+tidy_practice = tidy_flu_3 %>% 
+  filter(fluregion == 'North America',
+         year == '2008')
+
+epi_threshold_na = tidy_practice %>% 
+  glm(log(cases_by_1k) ~ week + cos(2*pi*(1/356)*week) + sin(2*pi*(1/356)*week), data = .)
+
+threshold_df = data.frame(epi_pred = predict(epi_threshold_na, tidy_practice), count = tidy_practice$cases_by_1k)
+
+  ggplot(data = tidy_practice, aes(x = week, y = cases_by_1k)) +
+  geom_line() +
+  geom_line(color = "red", data = threshold_df, aes(x = epi_pred, y = count))
+```
 
 
