@@ -21,13 +21,13 @@ Work on infectious disease modeling that was extremely interesting to us include
 
 ### Initial Questions
 
-Our approach to this analysis as evolved throughout this process. Our original plan was to do an analysis looking at different regions in order to examine the effects of seasonality on influenza transmission. As part of this analysis, we planned to also look at how factors such as urbanization and tourism affected this relationship between seasonality and transmission. However, after discussion with our TA, we realized that the time component of the influenza data would make this type of analysis beyond the scope of our knowledge. Instead, we decided to focus on the seasonality of influenza in different influenza zones.
+Our approach to this analysis as evolved throughout this process. Our original plan was to do an analysis looking at different regions in order to examine the effects of seasonality on influenza transmission. As part of this analysis, we planned to also look at how factors such as urbanization and tourism affected this relationship between seasonality and transmission. However, after discussion with our TA, we realized that the time component of the influenza data would make this type of analysis beyond the scope of our knowledge. Instead, we decided to focus on the seasonality of influenza in different influenza transmission zones.
 
 ### Reading and Cleaning the Data
 
 Our data can be found [here](https://drive.google.com/drive/folders/1FcazPStI8FsAdQDWsujyn_jsFByolMC0).
 
-The following data was obtained from [The WHO FLunet](http://apps.who.int/flumart/Default?ReportNo=12). We queried data from all 18 influenza transmission zones from yeara 2008 thru 2014. Since this file was so large, we had to download the data into multiple CSVs, and then write a function to read in the multiple CSV files.
+The following data was obtained from [The WHO FLunet](http://apps.who.int/flumart/Default?ReportNo=12). We queried data from all 18 influenza transmission zones from years 2008 thru 2014. Since this file was so large, we had to download the data into multiple CSVs, and then write a function to read in the multiple CSV files.
 
 ``` r
 #Files were too large to query all at once
@@ -75,7 +75,7 @@ pop_df = read_excel("./data/pop_data.xls", skip = 3) %>%
   summarize(mean_pop = mean(pop))
 ```
 
-In order to create our data frame, we joined the flu data with the population data via a left join using country as the unique identifier. In order to do this, we also created a third data frame (countries) which we joined the population data to, and then joined countries to the flu data frame. In the process of the join, we calculated the population of each zone via the sum function. We also created a new variable (cases\_by\_100k), which we use as an outcome of interest further on in our analysis.
+In order to create our data frame, we joined the flu data with the population data via `left_join()` using country as the unique identifier. In order to do this, we also created a third data frame (countries) which we joined the population data to, and then joined countries to the flu data frame. In the process of the join, we calculated the population of each zone via the sum function. We also created a new variable (`cases_by_100k`), which we use as an outcome of interest further on in our analysis.
 
 Join `flu_df` and `pop_df`
 
@@ -137,7 +137,7 @@ flu_df %>%
 
 ![](report_and_data_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
-For the graphs, it is clear that type A is the more prominent influenza type worldwide. Furthermore, H1N1 and H3 are the two prominent influenza A subtypes. Especially of note is the year 2009, which saw a huge spike in influenza A, specifically subtype H1N1. This is the swine flu pandemic. We see that before this spike, H3 was the dominant subtype. Interesting, after 2009, there does not appear to be a dominant subtype, as we see a relatively even number of H1N1 and H3 cases.
+For the graphs, it is clear that type A is the more prominent influenza type worldwide. Furthermore, H1N1 and H3 are the two prominent influenza A subtypes. Especially of note is the year 2009, which saw a huge spike in influenza A, specifically subtype H1N1. This is the swine flu pandemic. We see that before this spike, H3 was the dominant subtype and the novel H1N1 type was nonexistant. Interestingly, after 2009, there does not appear to be a dominant subtype, as we see a relatively even number of H1N1 and H3 cases.
 
 After looking at the number of cases, we wanted to see how cases varied over time by transmission zone:
 
@@ -152,7 +152,7 @@ flu_df %>%
 
 From these graphs, we can see the seasonality of influenza infections and how it varies depending on the transmission zone. Specifically, zones that are in the northern hemisphere have high numbers of cases at the very beginning and end of each year (the flu season beginning at the end of the year and continuing into the next year), while zones in the southern hemisphere have high case counts in the middle of the year. Another notable part of these visualizations is the year 2009, the pandemic year. This year has a different seasonal distribution as other years and a higher peak, which are characteristics of a global flu pandemic.
 
-In order to continue our analysis, we decided to limit our analysis to the zones with the most easily visible data. We filtered North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America. We also decided to include Eastern Asia in our analysis because it included China and South Africa in order to have a zone from that continent.
+In order to continue our analysis, we decided to limit our analysis to the zones with the most easily visible data. We filtered North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America. We also decided to include the zone of Eastern Asia in our analysis because it includes China, a hotspot for the emergence of new influenza A subtypes, as well as the zone of South Africa so as to include a zone from that continent.
 
 We looked at the distribution of influenza types and subtypes by each zone that we chose.
 
@@ -253,7 +253,9 @@ EaAs / SA
 
 ![](report_and_data_files/figure-markdown_github/unnamed-chunk-7-3.png)
 
-Again notable in this visualization is the spike in the number of H1N1 cases that we see in 2009. We also see that this spike comes at a similar time of year in each of the region, going against the normal seasonality of the northern hemisphere regions.
+Again, notable in this visualization is the spike in the number of H1N1 cases that we see in 2009. We also see that this spike comes at a similar time of year in each of the region, going against the normal seasonality of the northern hemisphere regions.
+
+Attention should be called to the temporal location of each peak for each zone. Zones in the Northern hemisphere (like North America and Northern Europe) have peak number of cases during the end/beginning of each year, and zones in the Southern hemisphere (like South Africa, Temperate South America, and Polynesia) have peak number of cases during the middle of the year. The Eastern Asia zone stands out in that most of the peaks occur during the end/beginning of the year, however, the H3 subtype seems to peak more so during the middle of the year.
 
 ### Additional Analysis and Epidemic Threshold
 
