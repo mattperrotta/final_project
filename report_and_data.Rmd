@@ -269,7 +269,7 @@ flu_fitted %>%
   geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) 
 ```
 
-We decided to use the outcome of interest of cases per 100K as opposed to a simple case count, because it would be easier to compare zones with different populations.  We also used date on the x-axis as this created a smoother curve.  As you can see, we have an epidemic threshold that follows the seasonality of the region.  The threshold is 1.64 standard deviations above the estimated number of cases, which is the standard the CDC uses.
+We decided to use the outcome of interest of cases per 100K as opposed to a simple case count, because it would be easier to compare zones with different populations.  We also used the variable `date` on the x-axis as this created a smoother curve. As you can see, we have an epidemic threshold that follows the seasonality of the region. The threshold is 1.64 standard deviations above the estimated number of cases, which is the standard the CDC uses.
 
 Finally, we write a function and run this regression on our other zones of interest:
 
@@ -306,3 +306,8 @@ serfling_df %>%
 ```
 
 Again we have a threshold that follows the seasonality of each respected region.  We can see that when an epidemic is declared varies by each region and is dictated by the history of past influenza activity in the region and the hemisphere that the region is in, which affects the seasonality of influenza activity.
+
+# Discussion
+From our exploration of global infuenza data from 2008 to 2014, we were able to distinguish trends and events regarding the seasonality and types of influenza circulating through the world's population. Of note is the emergence of the novel H1N1 influenza A virus in 2009. Irregardless of infuenza seasonality, the emergence of H1N1 was a global event, as seen in previous figures that show a spike in H1N1 cases during the middle months of 2009. This emergence was on a pandemic scale, effecting all infuenza transmission zones and then overtime reverting to a seasonal strain and following the seasonality seen in the other types and subtypes.
+
+The creation of an influenza epidemic curve using a serfling regression allowed us to plot the curve with the yearly influenza trends of our regions of interest. The influenza epidemic curve is used to compare the observed influenza cases to the expected. The curve we have provided appropriately fits all of our regions of interest in that when comparing observed and expected cases, the 2009 pandemic can be identified. 
