@@ -221,7 +221,9 @@ SA = flu_df %>%
     y = 'Cases'
   )
 
-NoAm / NoEu / OMP / TSA / EaAs / SA
+NoAm / NoEu
+OMP / TSA 
+EaAs / SA
 ```
 
 Again notable in this visualization is the spike in the number of H1N1 cases that we see in 2009.  We also see that this spike comes at a similar time of year in each of the region, going against the normal seasonality of the northern hemisphere regions.
