@@ -259,7 +259,7 @@ flu_data <- tidy_flu %>%
 
 base_fit <- flu_data %>%
   filter(fluregion == 'North America') %>% 
-  lm(a_total ~ week + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+  lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
 
 base_pred <- flu_data %>%
   mutate(inf_a_prop = 0) %>%
@@ -268,31 +268,30 @@ base_pred <- flu_data %>%
 
 flu_fitted <- flu_data %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
+
+flu_lm = function(df){
+  
+  function_fit = df %>%
+  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = df, na.action = na.exclude) 
+  
+function_pred <- df %>%
+  mutate(inf_a_prop = 0) %>%
+  predict(function_fit, newdata = ., se.fit = TRUE, 
+          interval = 'prediction', level = 0.95)
+  
+  function_fitted = df %>%
+  add_column(y0 = function_pred$fit[,1], y0_ul = function_pred$fit[,3])
+}
+  
+
 ```
 
 ```{r}
-<<<<<<< HEAD
-flu = flu_fitted %>% 
-=======
 flu_fitted %>% 
->>>>>>> 9a0cdf72b2a5e4d8e1c0ddbf1e914066b98d665e
-  filter(year == '2008') %>% 
-  ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
-  geom_line() +
-  geom_line(aes(x = week, y = y0_ul, color = 'Epi Threshold')) +
-  geom_line(aes(x = week, y = y0, color = 'Expected')) +
-  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
-  geom_line(aes(x = week, y = h3, color = 'H3')) +
-  geom_line(aes(x = week, y = h5, color = 'H5')) +
-  facet_grid(~ year)
-```
-```{r}
-<<<<<<< HEAD
-
-=======
-flu_orginal = flu_data %>% 
   filter(fluregion == 'North America') %>% 
-  flum(model = "fluserf", outc = a_total, time = edate)
->>>>>>> 9a0cdf72b2a5e4d8e1c0ddbf1e914066b98d665e
+  ggplot(aes(x = epiweek, y = cases)) +
+  geom_line() +
+  geom_line(aes(x = epiweek, y = y0_ul, color = "red")) 
 ```
+
 
