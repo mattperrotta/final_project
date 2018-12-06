@@ -267,7 +267,7 @@ flu_fitted %>%
   geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) 
 ```
 
-We decided to use the outcome of interest of cases per 100K as opposed to a simple case count, because it would be easier to compare zones with different populations.  We also used data on the x-axis as this created a smoother curve.  As you can see, we have an epidemic threshold that follows the seasonality of the region.  The threshold is 1.64 standard deviations above the estimated number of cases, which is the standard the CDC uses.
+We decided to use the outcome of interest of cases per 100K as opposed to a simple case count, because it would be easier to compare zones with different populations.  We also used date on the x-axis as this created a smoother curve.  As you can see, we have an epidemic threshold that follows the seasonality of the region.  The threshold is 1.64 standard deviations above the estimated number of cases, which is the standard the CDC uses.
 
 Finally, we write a function and run this regression on our other zones of interest:
 
