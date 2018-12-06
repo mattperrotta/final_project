@@ -14,8 +14,7 @@ library(dplyr)
 library(readxl)
 library(patchwork)
 library(devtools)
-#install_github("kmcconeghy/flumodelr")
-library(flumodelr)
+
 ```
 
 
@@ -249,7 +248,7 @@ Creating an epidemic threshold
 
 Attempt at serfling regression and epidemic threshold
 ```{r}
-flu_data <- tidy_flu %>% 
+flu_data = tidy_flu %>% 
   mutate(theta = 2*week/52,
          sin_f1 = sin(theta),
          cos_f1 = cos(theta),
@@ -258,34 +257,32 @@ flu_data <- tidy_flu %>%
          week_4 = week^4,
          week_5 = week^5)
 
-base_fit <- flu_data %>%
+base_fit = flu_data %>%
   filter(fluregion == 'North America') %>% 
   lm(a_total ~ week + sin_f1 + cos_f1, data = ., na.action = na.exclude)
 
-base_pred <- flu_data %>%
+base_pred = flu_data %>%
   mutate(inf_a_prop = 0) %>%
   predict(base_fit, newdata = ., se.fit = TRUE, 
           interval = 'prediction', level = 0.90)
 
-flu_fitted <- flu_data %>%
+flu_fitted = flu_data %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
 ```
 
 ```{r}
-flu_fitted %>% 
+flu = flu_fitted %>% 
 #  filter(year == '2008') %>% 
   ggplot() +
   geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+  filter(year == '2008') %>% 
+  ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+  geom_line() +
   geom_line(aes(x = week, y = y0_ul, color = 'Epi Threshold')) +
   geom_line(aes(x = week, y = y0, color = 'Expected')) +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
   geom_line(aes(x = week, y = h3, color = 'H3')) +
   geom_line(aes(x = week, y = h5, color = 'H5')) +
   facet_grid(~ year)
-```
-```{r}
-flu_orginal = flu_data %>% 
-  filter(fluregion == 'North America') %>% 
-  flum(model = "fluserf", outc = a_total, time = edate)
 ```
 
