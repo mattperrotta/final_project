@@ -248,7 +248,7 @@ Creating an epidemic threshold
 
 Attempt at serfling regression and epidemic threshold
 ```{r}
-flu_data <- tidy_flu %>% 
+flu_data = tidy_flu %>% 
   mutate(theta = 2*week/52,
          sin_f1 = sin(theta),
          cos_f1 = cos(theta),
@@ -257,16 +257,16 @@ flu_data <- tidy_flu %>%
          week_4 = week^4,
          week_5 = week^5)
 
-base_fit <- flu_data %>%
+base_fit = flu_data %>%
   filter(fluregion == 'North America') %>% 
   lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
 
-base_pred <- flu_data %>%
+base_pred = flu_data %>%
   mutate(inf_a_prop = 0) %>%
   predict(base_fit, newdata = ., se.fit = TRUE, 
-          interval = 'prediction', level = 0.95)
+          interval = 'prediction', level = 0.90)
 
-flu_fitted <- flu_data %>%
+flu_fitted = flu_data %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
 
 flu_lm = function(df){
@@ -287,11 +287,23 @@ function_pred <- df %>%
 ```
 
 ```{r}
+<<<<<<< HEAD
 flu_fitted %>% 
   filter(fluregion == 'North America') %>% 
   ggplot(aes(x = epiweek, y = cases)) +
+=======
+flu = flu_fitted %>% 
+#  filter(year == '2008') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+  filter(year == '2008') %>% 
+  ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+>>>>>>> 2c866f25ba8edd6e2749519741168491d17da3ee
   geom_line() +
   geom_line(aes(x = epiweek, y = y0_ul, color = "red")) 
 ```
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2c866f25ba8edd6e2749519741168491d17da3ee
 
