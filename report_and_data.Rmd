@@ -92,22 +92,12 @@ flu_df %>%
   
 ```
 
-The zones with the most complete data are North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America
+The zones with the most complete data are North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America.  We also decided to include Eastern Asia in our analysis because it included China and South Africa.
 
-```{r}
-#Filter flu data for zones of interest
-tidy_flu_3 = tidy_flu_2 %>% 
-  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) 
-
-tidy_flu_3 %>% 
-  ggplot(aes(x = week, y = cases_by_1k, color = year)) +
-  geom_line() +
-  facet_wrap(~ fluregion)
-```
 
 Looking at distribution of influenza types and subtypes
 ```{r}
-NoAm = tidy_flu_3 %>% 
+NoAm = flu_df %>% 
   filter(fluregion == 'North America') %>% 
   ggplot() +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
@@ -120,7 +110,7 @@ NoAm = tidy_flu_3 %>%
     y = 'Cases'
   )
 
-NoEu = tidy_flu_3 %>% 
+NoEu = flu_df %>% 
   filter(fluregion == 'Northern Europe') %>% 
   ggplot() +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
@@ -133,7 +123,7 @@ NoEu = tidy_flu_3 %>%
     y = 'Cases'
   )
 
-OMP = tidy_flu_3 %>% 
+OMP = flu_df %>% 
   filter(fluregion == 'Oceania Melanesia Polynesia') %>% 
   ggplot() +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
@@ -146,7 +136,7 @@ OMP = tidy_flu_3 %>%
     y = 'Cases'
   )
 
-TSA = tidy_flu_3 %>% 
+TSA = flu_df %>% 
   filter(fluregion == 'Temperate South America') %>% 
   ggplot() +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
@@ -159,7 +149,7 @@ TSA = tidy_flu_3 %>%
     y = 'Cases'
   )
 
-EaAs = tidy_flu_3 %>% 
+EaAs = flu_df %>% 
   filter(fluregion == 'Eastern Asia') %>% 
   ggplot() +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
@@ -172,7 +162,20 @@ EaAs = tidy_flu_3 %>%
     y = 'Cases'
   )
 
-NoAm / NoEu / OMP / TSA / EaAs
+SA = flu_df %>% 
+  filter(fluregion == 'Southern Africa') %>% 
+  ggplot() +
+  geom_line(aes(x = week, y = h1n1, color = 'H1')) +
+  geom_line(aes(x = week, y = h3, color = 'H3')) +
+  geom_line(aes(x = week, y = h5, color = 'H5')) +
+  geom_line(aes(x = week, y = b_total, color = 'Type B')) +
+  facet_grid(~ year) +
+  labs(
+    title = 'Southern Africa',
+    y = 'Cases'
+  )
+
+NoAm / NoEu / OMP / TSA / EaAs / SA
 ```
 
 
@@ -180,8 +183,8 @@ Creating an epidemic threshold
 
 Attempt at serfling regression and epidemic threshold
 ```{r}
-flu_data = tidy_flu %>% 
-  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) %>% 
+epi_threshold_df = flu_df %>% 
+  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia', 'Southern Africa')) %>% 
   mutate(theta = 2*week/52,
          sin_f1 = sin(theta),
          cos_f1 = cos(theta),
@@ -190,34 +193,33 @@ flu_data = tidy_flu %>%
          week_4 = week^4,
          week_5 = week^5)
 
-base_fit = flu_data %>%
+base_fit = epi_threshold_df %>%
   filter(fluregion == 'North America') %>% 
-  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+  lm(cases_by_100k ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
 
-base_pred = flu_data %>%
+base_pred = epi_threshold_df %>%
   mutate(inf_a_prop = 0) %>%
   predict(base_fit, newdata = ., se.fit = TRUE, 
           interval = 'prediction', level = 0.90)
 
-flu_fitted = flu_data %>%
+flu_fitted = epi_threshold_df %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
 ```
 
-2008-2014 Influenza Cases and Epidemic THreshold
+2008-2014 Influenza Cases and Epidemic Threshold
 ```{r}
 flu_fitted %>% 
   filter(fluregion == 'North America') %>% 
-  ggplot(aes(x = date, y = cases)) +
+  ggplot(aes(x = date, y = cases_by_100k)) +
   geom_line() +
-  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
-  geom_line(aes(x = date, y = y0, color = 'Expected'))
+  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) 
 ```
 
 ```{r}
 flu_lm = function(df){
   
   function_fit = df %>%
-  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude) 
+  lm(cases_by_100k ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude) 
   
 function_pred = df %>%
   mutate(inf_a_prop = 0) %>%
@@ -228,7 +230,7 @@ function_pred = df %>%
   add_column(y0 = function_pred$fit[,1], y0_ul = function_pred$fit[,3])
 }
 
-flu_new = flu_data %>% 
+serfling_df = epi_threshold_df %>% 
   group_by(fluregion) %>% 
   nest() %>% 
   mutate(map(data, ~flu_lm(.x))) %>% 
@@ -236,17 +238,10 @@ flu_new = flu_data %>%
   
 ```
 
-```{r}
-flu_new %>% 
-  filter(fluregion == 'Temperate South America') %>% 
-  ggplot(aes(x = date, y = cases)) +
-  geom_line() +
-  geom_line(aes(x = date, y = y0_ul, color = "red")) 
-```
 
 ```{r}
-flu_new %>% 
-  ggplot(aes(x = date, y = cases)) +
+serfling_df %>% 
+  ggplot(aes(x = date, y = cases_by_100k)) +
   geom_line() +
   geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
   facet_wrap(~fluregion)
