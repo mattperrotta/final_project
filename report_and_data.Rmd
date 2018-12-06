@@ -244,15 +244,14 @@ NoAm / NoEu / OMP / TSA / EaAs
 ```
 
 
-Creating an epidemic threshold line
-
+Creating an epidemic threshold
 
 Attempt at serfling regression and epidemic threshold
 ```{r}
 flu_data <- tidy_flu %>% 
   mutate(theta = 2*week/52,
-         sin_f1 = sinpi(theta),
-         cos_f1 = cospi(theta),
+         sin_f1 = sin(theta),
+         cos_f1 = cos(theta),
          week_2 = week^2,
          week_3 = week^3,
          week_4 = week^4,
@@ -272,7 +271,11 @@ flu_fitted <- flu_data %>%
 ```
 
 ```{r}
+<<<<<<< HEAD
 flu = flu_fitted %>% 
+=======
+flu_fitted %>% 
+>>>>>>> 9a0cdf72b2a5e4d8e1c0ddbf1e914066b98d665e
   filter(year == '2008') %>% 
   ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
   geom_line() +
@@ -284,6 +287,12 @@ flu = flu_fitted %>%
   facet_grid(~ year)
 ```
 ```{r}
+<<<<<<< HEAD
 
+=======
+flu_orginal = flu_data %>% 
+  filter(fluregion == 'North America') %>% 
+  flum(model = "fluserf", outc = a_total, time = edate)
+>>>>>>> 9a0cdf72b2a5e4d8e1c0ddbf1e914066b98d665e
 ```
 
