@@ -265,7 +265,7 @@ base_fit <- flu_data %>%
 base_pred <- flu_data %>%
   mutate(inf_a_prop = 0) %>%
   predict(base_fit, newdata = ., se.fit = TRUE, 
-          interval = 'prediction', level = 0.95)
+          interval = 'prediction', level = 0.90)
 
 flu_fitted <- flu_data %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
@@ -273,7 +273,7 @@ flu_fitted <- flu_data %>%
 
 ```{r}
 flu_fitted %>% 
-  filter(year == '2008') %>% 
+#  filter(year == '2008') %>% 
   ggplot() +
   geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
   geom_line(aes(x = week, y = y0_ul, color = 'Epi Threshold')) +
