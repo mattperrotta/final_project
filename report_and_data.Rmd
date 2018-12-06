@@ -249,6 +249,7 @@ Creating an epidemic threshold
 Attempt at serfling regression and epidemic threshold
 ```{r}
 flu_data = tidy_flu %>% 
+  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) %>%
   mutate(theta = 2*week/52,
          sin_f1 = sin(theta),
          cos_f1 = cos(theta),
@@ -259,7 +260,7 @@ flu_data = tidy_flu %>%
 
 base_fit = flu_data %>%
   filter(fluregion == 'North America') %>% 
-  lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+  lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude) 
 
 base_pred = flu_data %>%
   mutate(inf_a_prop = 0) %>%
@@ -272,9 +273,9 @@ flu_fitted = flu_data %>%
 flu_lm = function(df){
   
   function_fit = df %>%
-  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = df, na.action = na.exclude) 
+  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude) 
   
-function_pred <- df %>%
+function_pred = df %>%
   mutate(inf_a_prop = 0) %>%
   predict(function_fit, newdata = ., se.fit = TRUE, 
           interval = 'prediction', level = 0.95)
@@ -282,28 +283,27 @@ function_pred <- df %>%
   function_fitted = df %>%
   add_column(y0 = function_pred$fit[,1], y0_ul = function_pred$fit[,3])
 }
-  
 
+test = flu_data %>% 
+  group_by(fluregion) %>% 
+  nest() %>% 
+  mutate(map(data, ~flu_lm(.x))) %>% 
+  unnest() 
+  
 ```
 
 ```{r}
-<<<<<<< HEAD
-flu_fitted %>% 
-  filter(fluregion == 'North America') %>% 
+test %>% 
+  filter(fluregion == 'Temperate South America') %>% 
   ggplot(aes(x = epiweek, y = cases)) +
-=======
-flu = flu_fitted %>% 
-#  filter(year == '2008') %>% 
-  ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
-  filter(year == '2008') %>% 
-  ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
->>>>>>> 2c866f25ba8edd6e2749519741168491d17da3ee
   geom_line() +
   geom_line(aes(x = epiweek, y = y0_ul, color = "red")) 
 ```
-<<<<<<< HEAD
 
-=======
->>>>>>> 2c866f25ba8edd6e2749519741168491d17da3ee
+```{r}
+test %>% 
+  ggplot(aes(x = week, y = cases)) +
+  geom_line() +
+  geom_line(aes(x = week, y = y0_ul, color = "red")) 
+```
 
