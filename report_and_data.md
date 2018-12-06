@@ -109,7 +109,12 @@ flu_df %>%
             type_b = sum(b_total)) %>% 
   gather(key = type, value = count, type_a:type_b) %>% 
   ggplot(aes(x = year, y = count, fill = type)) +
-  geom_bar(stat = 'identity', position = 'dodge')
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    title = 'Prevalence of Influenza Type by Year',
+    x = 'Year',
+    y = 'Positive Surveillane Samples'
+  )
 ```
 
 ![](report_and_data_files/figure-markdown_github/unnamed-chunk-4-1.png)
@@ -122,7 +127,12 @@ flu_df %>%
             h5 = sum(h5)) %>% 
   gather(key = subtype, value = count, h1n1:h5) %>% 
   ggplot(aes(x = year, y = count, fill = subtype)) +
-  geom_bar(stat = 'identity', position = 'dodge')
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    title = 'Prevalence of Influenza A Subtype by Year',
+    x = 'Year',
+    y = 'Positive Surveillane Samples'
+  )
 ```
 
 ![](report_and_data_files/figure-markdown_github/unnamed-chunk-5-1.png)
@@ -282,7 +292,12 @@ flu_fitted %>%
   filter(fluregion == 'North America') %>% 
   ggplot(aes(x = date, y = cases_by_100k)) +
   geom_line() +
-  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) 
+  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
+  labs(
+    title = 'Cases per 100k with Epidemic Threshold',
+    x = 'Year',
+    y = 'Cases per 100k'
+  )
 ```
 
 ![](report_and_data_files/figure-markdown_github/unnamed-chunk-9-1.png)
@@ -318,7 +333,12 @@ serfling_df %>%
   ggplot(aes(x = date, y = cases_by_100k)) +
   geom_line() +
   geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
-  facet_wrap(~fluregion)
+  facet_wrap(~fluregion) +
+  labs(
+    title = 'Cases per 100k with Epidemic Threshold',
+    x = 'Year',
+    y = 'Cases per 100k'
+  )
 ```
 
 ![](report_and_data_files/figure-markdown_github/unnamed-chunk-11-1.png)

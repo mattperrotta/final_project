@@ -109,13 +109,12 @@ flu_df = left_join(flu_df, demo, by = 'fluregion') %>%
   mutate(cases_by_100k = (cases*100000)/pop)
 ```
 
-Our final data frame for analysis has 16 variables and 6515 observations.  Each unique observation provides information on the number of flu cases for one epi week in one year in a single influenza transmission zone.  Some variables of interest in the data set are `fluregion`, which is the influenza transmission zone, `year` which describes the year the observation took place, `week` which describes the epi-week the observation took place, `date` which is the last day of each epi-week, `cases` which describes the number of cases in a given zone in a given epi-week, and `cases_by_100k` which is the number of cases per 100k in a given zone in a given epi-week.
+Our final data frame for analysis has `r ncol(flu_df)` variables and `r nrow(flu_df)` observations.  Each unique observation provides information on the number of flu cases for one epi week in one year in a single influenza transmission zone.  Some variables of interest in the data set are `fluregion`, which is the influenza transmission zone, `year` which describes the year the observation took place, `week` which describes the epi-week the observation took place, `date` which is the last day of each epi-week, `cases` which describes the number of cases in a given zone in a given epi-week, and `cases_by_100k` which is the number of cases per 100k in a given zone in a given epi-week.
 
 
 ###Exploratory Analysis
 
 First, we wanted to simply look to see what types of influenza were most prominent:
-
 
 ```{r}
 flu_df %>%
@@ -124,7 +123,12 @@ flu_df %>%
             type_b = sum(b_total)) %>% 
   gather(key = type, value = count, type_a:type_b) %>% 
   ggplot(aes(x = year, y = count, fill = type)) +
-  geom_bar(stat = 'identity', position = 'dodge')
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    title = 'Prevalence of Influenza Type by Year',
+    x = 'Year',
+    y = 'Positive Surveillane Samples'
+  )
 ```
 
 ```{r}
@@ -135,7 +139,12 @@ flu_df %>%
             h5 = sum(h5)) %>% 
   gather(key = subtype, value = count, h1n1:h5) %>% 
   ggplot(aes(x = year, y = count, fill = subtype)) +
-  geom_bar(stat = 'identity', position = 'dodge')
+  geom_bar(stat = 'identity', position = 'dodge') +
+  labs(
+    title = 'Prevalence of Influenza A Subtype by Year',
+    x = 'Year',
+    y = 'Positive Surveillane Samples'
+  )
 ```
 
 For the graphs, it is clear that type A is the more prominent influenza type worldwide.  Furthermore, H1N1 and H3 are the two prominent influenza A subtypes.  Especially of note is the year 2009, which saw a huge spike in influenza A, specifically subtype H1N1.  This is the swine flu pandemic.  We see that before this spike, H3 was the dominant subtype.  Interesting, after 2009, there does not appear to be a dominant subtype, as we see a relatively even number of H1N1 and H3 cases.  
@@ -280,7 +289,12 @@ flu_fitted %>%
   filter(fluregion == 'North America') %>% 
   ggplot(aes(x = date, y = cases_by_100k)) +
   geom_line() +
-  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) 
+  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
+  labs(
+    title = 'Cases per 100k with Epidemic Threshold',
+    x = 'Year',
+    y = 'Cases per 100k'
+  )
 ```
 
 We decided to use the outcome of interest of cases per 100K as opposed to a simple case count, because it would be easier to compare zones with different populations.  We also used the variable `date` on the x-axis as this created a smoother curve. As you can see, we have an epidemic threshold that follows the seasonality of the region. The threshold is 1.64 standard deviations above the estimated number of cases, which is the standard the CDC uses.
@@ -316,7 +330,12 @@ serfling_df %>%
   ggplot(aes(x = date, y = cases_by_100k)) +
   geom_line() +
   geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
-  facet_wrap(~fluregion)
+  facet_wrap(~fluregion) +
+  labs(
+    title = 'Cases per 100k with Epidemic Threshold',
+    x = 'Year',
+    y = 'Cases per 100k'
+  )
 ```
 
 Again we have a threshold that follows the seasonality of each respected region.  We can see that when an epidemic is declared varies by each region and is dictated by the history of past influenza activity in the region and the hemisphere that the region is in, which affects the seasonality of influenza activity.
