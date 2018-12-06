@@ -1,17 +1,29 @@
 ---
-title: "Data"
-author: "Zach Keefer"
-date: "12/3/2018"
+title: "Report"
 output: html_document
 ---
+
+This is our Key Findings from our Final Report.
+
+###Motivation
 
 The primary objective of this project and endeavour is to explore the tools necessary to work in the intersection of infectious disease epidemiology modeling and data science. In fact, the four team members are a part of Mailman’s Infectious Disease Epidemiology Concentration.
 
 In exploring project ideas, we discussed feasability through the lens of data availability and our current knowledge of the field. The following includes some of our preliminary findings.
 
-We find that understanding current patterns and trends of flu would be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. Specifically, we wanted to examime the seasonality of inlfuenza in different regions in the world using country level influenza data, and to model epidemic thresholds for different regions.
+Last year, in 2018, nearly 80,000 people died from the flu in the US alone according to this [CNN article](https://www.cnn.com/2018/09/26/health/flu-deaths-2017--2018-cdc-bn/index.html). In fact, many scholars argue that there is an impending ‘global threat of avian flu’ due to rapid globalization and urbanization.
 
-### Load Packages
+We find that understanding current patterns and trends of flu would be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. Specifically, we wanted to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.
+
+###Related Work
+
+Work on infectious disease modeling that was extremely interesting to us included the discussion about historic Methods for current statistical analysis of excess pneumonia-influenza deaths, found in this [NCBI article](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1915276/). Additionally, the discussion during P8105 class (Data Science 1) about Google Flu Trends further inspired this exciting project.
+
+###Initial Questions
+
+Our approach to this analysis as evolved throughout this process. Our original plan was to do an analysis looking at different regions in order to examine the effects of seasonality on influenza transmission.  As part of this analysis, we planned to also look at how factors such as urbanization and tourism affected this relationship between seasonality and transmission.  However, after discussion with our TA, we realized that the time component of the influenza data would make this type of analysis beyond the scope of our knowledge.  Instead, we decided to focus on the seasonality of influenza in different influenza zones.
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
@@ -23,9 +35,9 @@ library(devtools)
 ```
 
 
-# Reading and Cleaning the Data
+###Reading and Cleaning the Data
 
-The following data was obtained from The WHO FLunet.  We queried data from all 18 influenza transmission zones from yeara 2008 thru 2014.  Since this file was so large, we had to download the data into multiple CSVs, and then write a function to read in the multiple CSV files.
+The following data was obtained from [The WHO FLunet](http://apps.who.int/flumart/Default?ReportNo=12).  We queried data from all 18 influenza transmission zones from yeara 2008 thru 2014.  Since this file was so large, we had to download the data into multiple CSVs, and then write a function to read in the multiple CSV files.
 
 ```{r message = FALSE, warning = FALSE}
 #Files were too large to query all at once
@@ -60,7 +72,7 @@ flu_df = file_df %>%
             inf_b_prop = sum(inf_b, na.rm = TRUE)/sum(spec_processed_nb, na.rm = TRUE))
 ```
 
-In order to to calculate rates, we needed population data for each zone, which we obtained from the World Bank.  We downloaded an excel file that contained population data on each country by year.  While reading in the data, we averaged the population for each country from 2008 until 2014.
+In order to to calculate rates, we needed population data for each zone, which we obtained from the [World Bank](https://data.worldbank.org/indicator/SP.POP.TOTL?end=2017&start=2017&view=bar).  We downloaded an excel file that contained population data on each country by year.  While reading in the data, we averaged the population for each country from 2008 until 2014.
 
 ```{r}
 pop_df = read_excel("./data/pop_data.xls", skip = 3) %>% 
@@ -96,9 +108,7 @@ flu_df = left_join(flu_df, demo, by = 'fluregion') %>%
 Our final data frame for analysis has 16 variables and 6515 observations.  Each unique observation provides information on the number of flu cases for one epi week in one year in a single influenza transmission zone.  Some variables of interest in the data set are `fluregion`, which is the influenza transmission zone, `year` which describes the year the observation took place, `week` which describes the epi-week the observation took place, `date` which is the last day of each epi-week, `cases` which describes the number of cases in a given zone in a given epi-week, and `cases_by_100k` which is the number of cases per 100k in a given zone in a given epi-week.
 
 
-# Exploratory Analysis
-
-Our approach to this analysis as evolved throughout this process. Our original plan was to do an analysis looking at different regions in order to examine the effects of seasonality on influenza transmission.  As part of this analysis, we planned to also look at how factors such as urbanization and tourism affected this relationship between seasonality and transmission.  However, after discussion with our TA, we realized that the time component of the influenza data would make this type of analysis beyond the scope of our knowledge.  Instead, we decided to focus on the seasonality of influenza in different influenza zones.
+###Exploratory Analysis
 
 First, we wanted to simply look to see what types of influenza were most prominent:
 
@@ -228,9 +238,9 @@ EaAs / SA
 
 Again notable in this visualization is the spike in the number of H1N1 cases that we see in 2009.  We also see that this spike comes at a similar time of year in each of the region, going against the normal seasonality of the northern hemisphere regions.
 
-# Epidemic Threshold
+###Additional Analysis and Epidemic Threshold
 
-Finally, we wanted to fit an epidemic threshold curve for each of our chosen transmission zones in order to see when these regions have epidemics.  After consulting with Dr. Stephen Morse, a professor in the Epidemiology Department at the Mailman School of Public Health, we decided to use a serfling regression model to estimate our curve.  This is the model used by the CDC to calculate an epidemic threshold.  We decided to include the year 2009 in our analysis, although we know it would slightly skew the results.  We modified code from this article in order to conduct the analysis: https://kmcconeghy.github.io/flumodelr/articles/05-modserf.html.
+Finally, we wanted to fit an epidemic threshold curve for each of our chosen transmission zones in order to see when these regions have epidemics.  After consulting with Dr. Stephen Morse, a professor in the Epidemiology Department at the Mailman School of Public Health, we decided to use a serfling regression model to estimate our curve.  This is the model used by the CDC to calculate an epidemic threshold.  We decided to include the year 2009 in our analysis, although we know it would slightly skew the results.  We modified code from [Kevin W. McConeghy](https://kmcconeghy.github.io/flumodelr/articles/05-modserf.html) in order to conduct the analysis (found via a google search).
 
 In order to first test our curve, we ran the regression on a single zone, North America.
 
@@ -306,3 +316,5 @@ serfling_df %>%
 ```
 
 Again we have a threshold that follows the seasonality of each respected region.  We can see that when an epidemic is declared varies by each region and is dictated by the history of past influenza activity in the region and the hemisphere that the region is in, which affects the seasonality of influenza activity.
+
+###Discussion
