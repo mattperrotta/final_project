@@ -5,6 +5,14 @@ date: "12/3/2018"
 output: html_document
 ---
 
+The primary objective of this project and endeavour is to explore the tools necessary to work in the intersection of infectious disease epidemiology modeling and data science. In fact, the four team members are a part of Mailman’s Infectious Disease Epidemiology Concentration.
+
+In exploring project ideas, we discussed feasability through the lens of data availability and our current knowledge of the field. The following includes some of our preliminary findings.
+
+Last year, in 2018, nearly 80,000 people died from the flu in the US alone according to this CNN article. In fact, many scholars argue that there is an impending ‘global threat of avian flu’ due to rapid globalization and urbanization.
+
+We find that understanding current patterns and trends of flu would be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. Specifically, we wanted to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.
+
 ### Load Packages
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -31,35 +39,13 @@ read_data = function(data){
 }
 
 flu_df = file_df %>%
-  mutate(obs = map(file_path, read_data))
-```
-
-Binding the data rows
-```{r}
-flu_df = flu_df %>%
+  mutate(obs = map(file_path, read_data)) %>% 
   unnest() %>% 
   janitor::clean_names() %>% 
-  ##Creating an epiweek variable that is ordinal
-  mutate(week = as.character(week),
-         week = ifelse(week == "1", "01", week),
-         week = ifelse(week == "2", "02", week),
-         week = ifelse(week == "3", "03", week),
-         week = ifelse(week == "4", "04", week),
-         week = ifelse(week == "5", "05", week),
-         week = ifelse(week == "6", "06", week),
-         week = ifelse(week == "7", "07", week),
-         week = ifelse(week == "8", "08", week),
-         week = ifelse(week == "9", "09", week),
-         epiweek = str_c(year, week, sep = "."),
-         epiweek = as.numeric(epiweek)) 
-```
-
-Tidy flu data set to use for visualizations
-```{r}
-tidy_flu = flu_df %>% 
   mutate(year = as.factor(year),
-         week = as.numeric(week)) %>% 
-  group_by(fluregion, epiweek, year, week, edate) %>% 
+         week = as.numeric(week),
+         date = edate) %>% 
+  group_by(fluregion, year, week, date) %>% 
   summarize(cases = sum(all_inf, na.rm = TRUE),
             h1 = sum(ah1, na.rm = TRUE),
             h3 = sum(ah3, na.rm = TRUE),
@@ -72,24 +58,35 @@ tidy_flu = flu_df %>%
             inf_b_prop = sum(inf_b, na.rm = TRUE)/sum(spec_processed_nb, na.rm = TRUE))
 ```
 
+Read in population data
+```{r}
+pop_df = read_excel("./data/pop_data.xls", skip = 3) %>% 
+  janitor::clean_names() %>% 
+  select(country, country_code, x2008:x2014) %>% 
+  gather(key = year, value = pop, x2008:x2014) %>% 
+  group_by(country) %>% 
+  summarize(mean_pop = mean(pop))
+```
+
+Join `flu_df` and `pop_df`
+```{r}
+countries = file_df %>%
+  mutate(obs = map(file_path, read_data)) %>% 
+  unnest() %>% 
+  janitor::clean_names() %>%
+  select(country, fluregion)
+
+demo = left_join(countries, pop_df, by = 'country') %>% 
+  group_by(fluregion) %>% 
+  summarize(pop = sum(mean_pop, na.rm = TRUE))
+
+flu_df = left_join(flu_df, demo, by = 'fluregion') %>% 
+  mutate(cases_by_100k = (cases*100000)/pop)
+```
 
 ```{r}
-tidy_flu_2 = flu_df %>% 
-  mutate(week = as.numeric(week),
-         year = as.factor(year)) %>% 
-  group_by(fluregion, year, week) %>% 
-    summarize(cases = sum(all_inf),
-            h1 = sum(ah1),
-            h3 = sum(ah3),
-            h5 = sum(ah5),
-            h1n1 = sum(ah1n12009),
-            a_total = sum(inf_a),
-            b_total = sum(inf_b)) %>% 
-  left_join(flu_region_demo, by = "fluregion") %>% 
-  mutate(cases_by_1k = (cases*1000)/population)
-
-tidy_flu_2 %>% 
-  ggplot(aes(x = week, y = cases_by_1k, color = year)) +
+flu_df %>% 
+  ggplot(aes(x = week, y = cases_by_100k, color = year)) +
   geom_line() +
   facet_wrap(~ fluregion)
   
@@ -184,6 +181,7 @@ Creating an epidemic threshold
 Attempt at serfling regression and epidemic threshold
 ```{r}
 flu_data = tidy_flu %>% 
+  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) %>% 
   mutate(theta = 2*week/52,
          sin_f1 = sin(theta),
          cos_f1 = cos(theta),
@@ -209,11 +207,10 @@ flu_fitted = flu_data %>%
 ```{r}
 flu_fitted %>% 
   filter(fluregion == 'North America') %>% 
-  ggplot(aes(x = edate, y = cases)) +
+  ggplot(aes(x = date, y = cases)) +
   geom_line() +
-  geom_line(aes(x = edate, y = y0_ul, color = 'Epidemic Threshold')) +
-  geom_line(aes(x = edate, y = y0, color = 'Expected'))
-
+  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
+  geom_line(aes(x = date, y = y0, color = 'Expected'))
 ```
 
 ```{r}
@@ -242,8 +239,16 @@ flu_new = flu_data %>%
 ```{r}
 flu_new %>% 
   filter(fluregion == 'Temperate South America') %>% 
-  ggplot(aes(x = edate, y = cases)) +
+  ggplot(aes(x = date, y = cases)) +
   geom_line() +
-  geom_line(aes(x = edate, y = y0_ul, color = "red")) 
+  geom_line(aes(x = date, y = y0_ul, color = "red")) 
+```
+
+```{r}
+flu_new %>% 
+  ggplot(aes(x = date, y = cases)) +
+  geom_line() +
+  geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) +
+  facet_wrap(~fluregion)
 ```
 
