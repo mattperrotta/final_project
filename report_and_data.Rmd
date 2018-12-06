@@ -131,7 +131,7 @@ flu_demo_df = left_join(tidy_flu, flu_region_demo, by = "fluregion") %>%
 
 ```{r}
 flu_demo_df %>% 
-  ggplot(aes(x = epiweek, y = cases_by_1k)) +
+  ggplot(aes(x = edate, y = cases_by_1k)) +
   geom_line() +
   facet_wrap(~ fluregion)
 ```
@@ -259,7 +259,7 @@ flu_data = tidy_flu %>%
 
 base_fit = flu_data %>%
   filter(fluregion == 'North America') %>% 
-  lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
 
 base_pred = flu_data %>%
   mutate(inf_a_prop = 0) %>%
@@ -268,16 +268,29 @@ base_pred = flu_data %>%
 
 flu_fitted = flu_data %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
+```
 
+2008-2014 Influenza Cases and Epidemic THreshold
+```{r}
+flu_fitted %>% 
+  filter(fluregion == 'North America') %>% 
+  ggplot(aes(x = edate, y = cases)) +
+  geom_line() +
+  geom_line(aes(x = edate, y = y0_ul, color = 'Epidemic Threshold')) +
+  geom_line(aes(x = edate, y = y0, color = 'Expected'))
+
+```
+
+```{r}
 flu_lm = function(df){
   
   function_fit = df %>%
   lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = df, na.action = na.exclude) 
   
-function_pred <- df %>%
+function_pred = df %>%
   mutate(inf_a_prop = 0) %>%
   predict(function_fit, newdata = ., se.fit = TRUE, 
-          interval = 'prediction', level = 0.95)
+          interval = 'prediction', level = 0.90)
   
   function_fitted = df %>%
   add_column(y0 = function_pred$fit[,1], y0_ul = function_pred$fit[,3])
@@ -287,23 +300,36 @@ function_pred <- df %>%
 ```
 
 ```{r}
-<<<<<<< HEAD
-flu_fitted %>% 
-  filter(fluregion == 'North America') %>% 
-  ggplot(aes(x = epiweek, y = cases)) +
-=======
-flu = flu_fitted %>% 
-#  filter(year == '2008') %>% 
-  ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
-  filter(year == '2008') %>% 
-  ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
->>>>>>> 2c866f25ba8edd6e2749519741168491d17da3ee
-  geom_line() +
-  geom_line(aes(x = epiweek, y = y0_ul, color = "red")) 
-```
-<<<<<<< HEAD
+epi_threshold = function(x){
+  
+  flu_data = x %>% 
+    mutate(theta = 2*week/52,
+         sin_f1 = sin(theta),
+         cos_f1 = cos(theta),
+         week_2 = week^2,
+         week_3 = week^3,
+         week_4 = week^4,
+         week_5 = week^5)
 
-=======
->>>>>>> 2c866f25ba8edd6e2749519741168491d17da3ee
+  base_fit = flu_data %>%
+    lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+
+  base_pred = flu_data %>%
+    mutate(inf_a_prop = 0) %>%
+    predict(base_fit, newdata = ., se.fit = TRUE, 
+          interval = 'prediction', level = 0.90)
+
+  flu_fitted = flu_data %>%
+    add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
+
+
+}
+
+  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) 
+  
+  
+
+```
+
+
 
