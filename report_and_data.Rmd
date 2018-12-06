@@ -28,7 +28,7 @@ library(devtools)
 # Reading and Cleaning the Data
 
 Function to read in multiple CSV files
-```{r}
+```{r message = FALSE, warning = FALSE}
 #Files were too large to query all at once
 file_df = tibble(file_path = list.files('./data/', pattern = '*.csv', full.names = TRUE), file_name = basename(file_path))
 
@@ -69,7 +69,7 @@ pop_df = read_excel("./data/pop_data.xls", skip = 3) %>%
 ```
 
 Join `flu_df` and `pop_df`
-```{r}
+```{r message = FALSE, warning = FALSE}
 countries = file_df %>%
   mutate(obs = map(file_path, read_data)) %>% 
   unnest() %>% 
@@ -84,12 +84,34 @@ flu_df = left_join(flu_df, demo, by = 'fluregion') %>%
   mutate(cases_by_100k = (cases*100000)/pop)
 ```
 
+# Exploratory Analysis
+
+```{r}
+flu_df %>%
+  group_by(year) %>% 
+  summarize(type_a = sum(a_total),
+            type_b = sum(b_total)) %>% 
+  gather(key = type, value = count, type_a:type_b) %>% 
+  ggplot(aes(x = year, y = count, fill = factor(type))) +
+  geom_bar(stat = 'identity', position = 'dodge')
+```
+
+```{r}
+flu_df %>%
+  group_by(year) %>% 
+  summarize(h1n1 = sum(h1n1),
+            h3 = sum(h3),
+            h5 = sum(h5)) %>% 
+  gather(key = subtype, value = count, h1n1:h5) %>% 
+  ggplot(aes(x = year, y = count, fill = factor(subtype))) +
+  geom_bar(stat = 'identity', position = 'dodge')
+```
+
 ```{r}
 flu_df %>% 
   ggplot(aes(x = week, y = cases_by_100k, color = year)) +
   geom_line() +
   facet_wrap(~ fluregion)
-  
 ```
 
 The zones with the most complete data are North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America.  We also decided to include Eastern Asia in our analysis because it included China and South Africa.
@@ -179,7 +201,7 @@ NoAm / NoEu / OMP / TSA / EaAs / SA
 ```
 
 
-Creating an epidemic threshold
+# Epidemic Threshold
 
 Attempt at serfling regression and epidemic threshold
 ```{r}
