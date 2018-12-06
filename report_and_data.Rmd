@@ -9,8 +9,6 @@ The primary objective of this project and endeavour is to explore the tools nece
 
 In exploring project ideas, we discussed feasability through the lens of data availability and our current knowledge of the field. The following includes some of our preliminary findings.
 
-Last year, in 2018, nearly 80,000 people died from the flu in the US alone according to this CNN article. In fact, many scholars argue that there is an impending ‘global threat of avian flu’ due to rapid globalization and urbanization.
-
 We find that understanding current patterns and trends of flu would be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. Specifically, we wanted to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.
 
 ### Load Packages
@@ -92,7 +90,7 @@ flu_df %>%
   summarize(type_a = sum(a_total),
             type_b = sum(b_total)) %>% 
   gather(key = type, value = count, type_a:type_b) %>% 
-  ggplot(aes(x = year, y = count, fill = factor(type))) +
+  ggplot(aes(x = year, y = count, fill = type)) +
   geom_bar(stat = 'identity', position = 'dodge')
 ```
 
@@ -103,7 +101,7 @@ flu_df %>%
             h3 = sum(h3),
             h5 = sum(h5)) %>% 
   gather(key = subtype, value = count, h1n1:h5) %>% 
-  ggplot(aes(x = year, y = count, fill = factor(subtype))) +
+  ggplot(aes(x = year, y = count, fill = subtype)) +
   geom_bar(stat = 'identity', position = 'dodge')
 ```
 
@@ -118,7 +116,7 @@ The zones with the most complete data are North America, Northern Europe, Oceani
 
 
 Looking at distribution of influenza types and subtypes
-```{r}
+```{r warning = TRUE}
 NoAm = flu_df %>% 
   filter(fluregion == 'North America') %>% 
   ggplot() +
@@ -144,6 +142,7 @@ NoEu = flu_df %>%
     title = 'Northern Europe',
     y = 'Cases'
   )
+
 
 OMP = flu_df %>% 
   filter(fluregion == 'Oceania Melanesia Polynesia') %>% 
