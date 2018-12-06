@@ -14,7 +14,6 @@ library(dplyr)
 library(readxl)
 library(patchwork)
 library(devtools)
-
 ```
 
 
@@ -72,70 +71,6 @@ tidy_flu = flu_df %>%
             inf_a_prop = sum(inf_a, na.rm = TRUE)/sum(spec_processed_nb, na.rm = TRUE),
             inf_b_prop = sum(inf_b, na.rm = TRUE)/sum(spec_processed_nb, na.rm = TRUE))
 ```
-
-Creation of dataset to bind demographic data
-```{r}
-countries = flu_df %>% 
-  group_by(fluregion, country) %>% 
-  summarize(infections = sum(all_inf))
-```
-
-Reading in and cleaning demographic data
-```{r}
-#Number of Arrivals
-arrival_df = read_excel("./data/arrival_data.xls", skip = 3) %>% 
-  janitor::clean_names() %>% 
-  select(country, country_code, x2008:x2014) %>% 
-  gather(key = year, value = arrivals, x2008:x2014) %>% 
-  group_by(country) %>% 
-  summarize(mean_arrival = mean(arrivals))
-
-#Population
-pop_df = read_excel("./data/pop_data.xls", skip = 3) %>% 
-  janitor::clean_names() %>% 
-  select(country, country_code, x2008:x2014) %>% 
-  gather(key = year, value = pop, x2008:x2014) %>% 
-  group_by(country) %>% 
-  summarize(mean_pop = mean(pop))
-
-#Doctors per 100,000
-drs_df = read_excel("./data/dr_per_100k_data.xls") %>% 
-  janitor::clean_names() %>% 
-  mutate(drs_per_100k = as.numeric(drs_per_100k)) %>% 
-  group_by(country) %>% 
-  summarize(drs = mean(drs_per_100k))
-```
-
-Joining and tidying of demographic data
-```{r}
-country_demo = left_join(countries, pop_df, by = "country")
-
-country_demo = left_join(country_demo, arrival_df, by = "country")
-
-country_demo = left_join(country_demo, drs_df, by = "country")
-
-flu_region_demo = country_demo %>% 
-  group_by(fluregion) %>% 
-  summarize(infections = sum(infections),
-            population = sum(mean_pop, na.rm = TRUE),
-            arrivals = sum(mean_arrival, na.rm = TRUE),
-            drs_per_100k = mean(drs, na.rm = TRUE))
-```
-
-Joining flu and demographic data
-```{r}
-flu_demo_df = left_join(tidy_flu, flu_region_demo, by = "fluregion") %>% 
-  mutate(cases_by_1k = (cases*1000)/population)
-```
-
-
-```{r}
-flu_demo_df %>% 
-  ggplot(aes(x = edate, y = cases_by_1k)) +
-  geom_line() +
-  facet_wrap(~ fluregion)
-```
-
 
 
 ```{r}
@@ -285,7 +220,7 @@ flu_fitted %>%
 flu_lm = function(df){
   
   function_fit = df %>%
-  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = df, na.action = na.exclude) 
+  lm(cases ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude) 
   
 function_pred = df %>%
   mutate(inf_a_prop = 0) %>%
@@ -295,41 +230,20 @@ function_pred = df %>%
   function_fitted = df %>%
   add_column(y0 = function_pred$fit[,1], y0_ul = function_pred$fit[,3])
 }
-  
 
+flu_new = flu_data %>% 
+  group_by(fluregion) %>% 
+  nest() %>% 
+  mutate(map(data, ~flu_lm(.x))) %>% 
+  unnest() 
+  
 ```
 
 ```{r}
-epi_threshold = function(x){
-  
-  flu_data = x %>% 
-    mutate(theta = 2*week/52,
-         sin_f1 = sin(theta),
-         cos_f1 = cos(theta),
-         week_2 = week^2,
-         week_3 = week^3,
-         week_4 = week^4,
-         week_5 = week^5)
-
-  base_fit = flu_data %>%
-    lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 + sin_f1 + cos_f1, data = ., na.action = na.exclude)
-
-  base_pred = flu_data %>%
-    mutate(inf_a_prop = 0) %>%
-    predict(base_fit, newdata = ., se.fit = TRUE, 
-          interval = 'prediction', level = 0.90)
-
-  flu_fitted = flu_data %>%
-    add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
-
-
-}
-
-  filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia')) 
-  
-  
-
+flu_new %>% 
+  filter(fluregion == 'Temperate South America') %>% 
+  ggplot(aes(x = edate, y = cases)) +
+  geom_line() +
+  geom_line(aes(x = edate, y = y0_ul, color = "red")) 
 ```
-
-
 
