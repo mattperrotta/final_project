@@ -14,8 +14,7 @@ library(dplyr)
 library(readxl)
 library(patchwork)
 library(devtools)
-#install_github("kmcconeghy/flumodelr")
-library(flumodelr)
+
 ```
 
 
@@ -261,8 +260,7 @@ flu_data <- tidy_flu %>%
 
 base_fit <- flu_data %>%
   filter(fluregion == 'North America') %>% 
-  lm(a_total ~ week + week_2 + week_3 + week_4 + week_5 +
-       inf_a_prop + sin_f1 + cos_f1, data = ., na.action = na.exclude)
+  lm(a_total ~ week + sin_f1 + cos_f1, data = ., na.action = na.exclude)
 
 base_pred <- flu_data %>%
   mutate(inf_a_prop = 0) %>%
@@ -275,11 +273,9 @@ flu_fitted <- flu_data %>%
 
 ```{r}
 flu = flu_fitted %>% 
-  mutate(week = as.numeric(week))
-flu_fitted %>% 
   filter(year == '2008') %>% 
-  ggplot() +
-  geom_line(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+  ggplot(aes(x = week, y = a_total, color = 'Inf A Cases')) +
+  geom_line() +
   geom_line(aes(x = week, y = y0_ul, color = 'Epi Threshold')) +
   geom_line(aes(x = week, y = y0, color = 'Expected')) +
   geom_line(aes(x = week, y = h1n1, color = 'H1')) +
@@ -288,7 +284,6 @@ flu_fitted %>%
   facet_grid(~ year)
 ```
 ```{r}
-flu_fitted %>% 
-  ggplot(aes(x = ))
+
 ```
 
