@@ -9,7 +9,7 @@ The primary objective of this project and endeavour is to explore the tools nece
 
 In exploring project ideas, we discussed feasability through the lens of data availability and our current knowledge of the field. The following includes some of our preliminary findings.
 
-We find that understanding current patterns and trends of flu would be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. Specifically, we wanted to examime the seasonality of inlfuenza in different regions in the world using country level influenza data.
+We find that understanding current patterns and trends of flu would be useful to build stronger epidemiological frameworks for disease surveillance and emergency preparedness. Specifically, we wanted to examime the seasonality of inlfuenza in different regions in the world using country level influenza data, and to model epidemic thresholds for different regions.
 
 ### Load Packages
 ```{r setup, include=FALSE}
@@ -25,7 +25,8 @@ library(devtools)
 
 # Reading and Cleaning the Data
 
-Function to read in multiple CSV files
+The following data was obtained from The WHO FLunet.  We queried data from all 18 influenza transmission zones from yeara 2008 thru 2014.  Since this file was so large, we had to download the data into multiple CSVs, and then write a function to read in the multiple CSV files.
+
 ```{r message = FALSE, warning = FALSE}
 #Files were too large to query all at once
 file_df = tibble(file_path = list.files('./data/', pattern = '*.csv', full.names = TRUE), file_name = basename(file_path))
@@ -42,7 +43,9 @@ flu_df = file_df %>%
   janitor::clean_names() %>% 
   mutate(year = as.factor(year),
          week = as.numeric(week),
+         ##Date is the last day of every epi week
          date = edate) %>% 
+  ##Flu data originally listed by country, combining into influenza transmission zones.
   group_by(fluregion, year, week, date) %>% 
   summarize(cases = sum(all_inf, na.rm = TRUE),
             h1 = sum(ah1, na.rm = TRUE),
@@ -52,19 +55,25 @@ flu_df = file_df %>%
             a_total = sum(inf_a, na.rm = TRUE),
             b_total = sum(inf_b, na.rm = TRUE),
             processed_samples = sum(spec_processed_nb, na.rm = TRUE),
+            ##These variable is the proportion of processed samples that test positive for influenza a or b respectively 
             inf_a_prop = sum(inf_a, na.rm = TRUE)/sum(spec_processed_nb, na.rm = TRUE),
             inf_b_prop = sum(inf_b, na.rm = TRUE)/sum(spec_processed_nb, na.rm = TRUE))
 ```
 
-Read in population data
+In order to to calculate rates, we needed population data for each zone, which we obtained from the World Bank.  We downloaded an excel file that contained population data on each country by year.  While reading in the data, we averaged the population for each country from 2008 until 2014.
+
 ```{r}
 pop_df = read_excel("./data/pop_data.xls", skip = 3) %>% 
   janitor::clean_names() %>% 
+  ##Selecting the specific year we are reading in.
   select(country, country_code, x2008:x2014) %>% 
   gather(key = year, value = pop, x2008:x2014) %>% 
   group_by(country) %>% 
+  ##Calculating the mean population for each country over the respective time period.
   summarize(mean_pop = mean(pop))
 ```
+
+In order to create our data frame, we joined the flu data with the population data via a left join using country as the unique identifier.  In order to do this, we also created a third data frame (countries) which we joined the population data to, and then joined countries to the flu data frame.  In the process of the join, we calculated the population of each zone via the sum function.  We also created a new variable (cases_by_100k), which we use as an outcome of interest further on in our analysis.
 
 Join `flu_df` and `pop_df`
 ```{r message = FALSE, warning = FALSE}
@@ -76,13 +85,23 @@ countries = file_df %>%
 
 demo = left_join(countries, pop_df, by = 'country') %>% 
   group_by(fluregion) %>% 
+  ##Summing the average population of each country in a given zone to create a zone population.
   summarize(pop = sum(mean_pop, na.rm = TRUE))
 
 flu_df = left_join(flu_df, demo, by = 'fluregion') %>% 
+  ##creating a variable to describe the number of cases per 100,000
   mutate(cases_by_100k = (cases*100000)/pop)
 ```
 
+Our final data frame for analysis has 16 variables and 6515 observations.  Each unique observation provides information on the number of flu cases for one epi week in one year in a single influenza transmission zone.  Some variables of interest in the data set are `fluregion`, which is the influenza transmission zone, `year` which describes the year the observation took place, `week` which describes the epi-week the observation took place, `date` which is the last day of each epi-week, `cases` which describes the number of cases in a given zone in a given epi-week, and `cases_by_100k` which is the number of cases per 100k in a given zone in a given epi-week.
+
+
 # Exploratory Analysis
+
+Our approach to this analysis as evolved throughout this process. Our original plan was to do an analysis looking at different regions in order to examine the effects of seasonality on influenza transmission.  As part of this analysis, we planned to also look at how factors such as urbanization and tourism affected this relationship between seasonality and transmission.  However, after discussion with our TA, we realized that the time component of the influenza data would make this type of analysis beyond the scope of our knowledge.  Instead, we decided to focus on the seasonality of influenza in different influenza zones.
+
+First, we wanted to simply look to see what types of influenza were most prominent:
+
 
 ```{r}
 flu_df %>%
@@ -105,6 +124,10 @@ flu_df %>%
   geom_bar(stat = 'identity', position = 'dodge')
 ```
 
+For the graphs, it is clear that type A is the more prominent influenza type worldwide.  Furthermore, H1N1 and H3 are the two prominent influenza A subtypes.  Especially of note is the year 2009, which saw a huge spike in influenza A, specifically subtype H1N1.  This is the swine flu pandemic.  We see that before this spike, H3 was the dominant subtype.  Interesting, after 2009, there does not appear to be a dominant subtype, as we see a relatively even number of H1N1 and H3 cases.  
+
+After looking at the number of cases, we wanted to see how cases varied over time by transmission zone:
+
 ```{r}
 flu_df %>% 
   ggplot(aes(x = week, y = cases_by_100k, color = year)) +
@@ -112,10 +135,12 @@ flu_df %>%
   facet_wrap(~ fluregion)
 ```
 
-The zones with the most complete data are North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America.  We also decided to include Eastern Asia in our analysis because it included China and South Africa.
+From these graphs, we can see the seasonality of influenza infections and how it varies depending on the transmission zone.  Specifically, zones that are in the northern hemisphere have high numbers of cases at the very beginning and end of each year (the flu season beginning at the end of the year and continuing into the next year), while zones in the southern hemisphere have high case counts in the middle of the year.  Another notable part of these visualizations is the year 2009, the pandemic year.  This year has a different seasonal distribution as other years and a higher peak, which are characteristics of a global flu pandemic.
 
+In order to continue our analysis, we decided to limit our analysis to the zones with the most easily visible data.  We filtered North America, Northern Europe, Oceania Melanesia Polynesia, and Temperate South America.  We also decided to include Eastern Asia in our analysis because it included China and South Africa in order to have a zone from that continent.
 
-Looking at distribution of influenza types and subtypes
+We looked at the distribution of influenza types and subtypes by each zone that we chose.
+
 ```{r warning = TRUE}
 NoAm = flu_df %>% 
   filter(fluregion == 'North America') %>% 
@@ -199,10 +224,14 @@ SA = flu_df %>%
 NoAm / NoEu / OMP / TSA / EaAs / SA
 ```
 
+Again notable in this visualization is the spike in the number of H1N1 cases that we see in 2009.  We also see that this spike comes at a similar time of year in each of the region, going against the normal seasonality of the northern hemisphere regions.
 
 # Epidemic Threshold
 
-Attempt at serfling regression and epidemic threshold
+Finally, we wanted to fit an epidemic threshold curve for each of our chosen transmission zones in order to see when these regions have epidemics.  After consulting with Dr. Stephen Morse, a professor in the Epidemiology Department at the Mailman School of Public Health, we decided to use a serfling regression model to estimate our curve.  This is the model used by the CDC to calculate an epidemic threshold.  We decided to include the year 2009 in our analysis, although we know it would slightly skew the results.  We modified code from this article in order to conduct the analysis: https://kmcconeghy.github.io/flumodelr/articles/05-modserf.html.
+
+In order to first test our curve, we ran the regression on a single zone, North America.
+
 ```{r}
 epi_threshold_df = flu_df %>% 
   filter(fluregion %in% c('North America', 'Northern Europe', 'Oceania Melanesia Polynesia', 'Temperate South America', 'Eastern Asia', 'Southern Africa')) %>% 
@@ -227,7 +256,9 @@ flu_fitted = epi_threshold_df %>%
   add_column(y0 = base_pred$fit[,1], y0_ul = base_pred$fit[,3])
 ```
 
-2008-2014 Influenza Cases and Epidemic Threshold
+
+Graphing our test curve:
+
 ```{r}
 flu_fitted %>% 
   filter(fluregion == 'North America') %>% 
@@ -235,6 +266,10 @@ flu_fitted %>%
   geom_line() +
   geom_line(aes(x = date, y = y0_ul, color = 'Epidemic Threshold')) 
 ```
+
+We decided to use the outcome of interest of cases per 100K as opposed to a simple case count, because it would be easier to compare zones with different populations.  We also used data on the x-axis as this created a smoother curve.  As you can see, we have an epidemic threshold that follows the seasonality of the region.  The threshold is 1.64 standard deviations above the estimated number of cases, which is the standard the CDC uses.
+
+Finally, we write a function and run this regression on our other zones of interest:
 
 ```{r}
 flu_lm = function(df){
@@ -268,3 +303,4 @@ serfling_df %>%
   facet_wrap(~fluregion)
 ```
 
+Again we have a threshold that follows the seasonality of each respected region.  We can see that when an epidemic is declared varies by each region and is dictated by the history of past influenza activity in the region and the hemisphere that the region is in, which affects the seasonality of influenza activity.
