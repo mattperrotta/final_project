@@ -294,16 +294,10 @@ test = flu_data %>%
 
 ```{r}
 test %>% 
-  filter(fluregion == 'Temperate South America') %>% 
-  ggplot(aes(x = epiweek, y = cases)) +
+  ggplot(aes(x = edate, y = cases)) +
   geom_line() +
-  geom_line(aes(x = epiweek, y = y0_ul, color = "red")) 
+  geom_line(aes(x = edate, y = y0_ul, color = "red")) +
+  facet_wrap(~fluregion)
 ```
 
-```{r}
-test %>% 
-  ggplot(aes(x = week, y = cases)) +
-  geom_line() +
-  geom_line(aes(x = week, y = y0_ul, color = "red")) 
-```
 
